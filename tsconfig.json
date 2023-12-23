@@ -21,10 +21,11 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    }
+      "@/*": ["./src/*"]
+    },
+
+    /* Remove on prod */
+    "allowJs": true
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
