@@ -14,7 +14,7 @@ export default function DeleteDialog({
   onCancel,
   onSubmit,
 }: {
-  onCancel: MouseEventHandler<HTMLButtonElement>;
+  onCancel?: MouseEventHandler<HTMLButtonElement>;
   onSubmit: MouseEventHandler<HTMLButtonElement>;
 }) {
   return (

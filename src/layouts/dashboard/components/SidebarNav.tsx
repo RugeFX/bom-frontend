@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { type LucideIcon, Home, BoxIcon, PackageIcon } from "lucide-react";
+import { type LucideIcon, Home, PackageIcon, ReceiptIcon, DatabaseIcon } from "lucide-react";
 import { SheetContent } from "@/components/ui/sheet";
 
 const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
@@ -11,19 +11,29 @@ const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
   {
     name: "Masters",
     to: "/masters",
-    Icon: BoxIcon,
+    Icon: DatabaseIcon,
+  },
+  // {
+  //   name: "Generals",
+  //   to: "/generals",
+  //   Icon: PackageIcon,
+  // },
+  {
+    name: "Materials",
+    to: "/materials",
+    Icon: PackageIcon,
   },
   {
-    name: "Generals",
-    to: "/generals",
-    Icon: PackageIcon,
+    name: "BOMs",
+    to: "/boms",
+    Icon: ReceiptIcon,
   },
 ];
 
 export default function SidebarNav({ mobile = false }: { mobile?: boolean }) {
   return mobile ? (
-    <SheetContent side="left" className="p-0 pr-12 w-5/6 sm:max-w-2xl">
-      <aside className="h-full">
+    <SheetContent side="left" className="p-0 pr-10 w-5/6 sm:max-w-md">
+      <aside className="h-full m-2">
         <SidebarItems />
       </aside>
     </SheetContent>

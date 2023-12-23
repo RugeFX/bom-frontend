@@ -7,7 +7,7 @@ export type General = {
   name: string;
   quantity: number;
   master_code: string;
-  color_id: number;
+  // color_id: number;
   created_at: string;
   updated_at: string;
   material?: Material;

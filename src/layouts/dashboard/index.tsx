@@ -2,14 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import MainNav from "./components/MainNav";
 import SidebarNav from "./components/SidebarNav";
 import { Outlet, useLocation } from "react-router-dom";
-import { useMediaQuery } from "react-responsive";
+import { useMediaQuery } from "usehooks-ts";
 import { Sheet } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 
 export default function DashboardLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
-  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const isMobile = useMediaQuery("(max-width: 768px)");
   const { pathname } = useLocation();
 
   useEffect(() => {

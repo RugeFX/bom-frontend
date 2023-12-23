@@ -1,7 +1,6 @@
 import apiClient from "@/api/apiClient";
 import { DataTableColumnHeader } from "@/components/data-table/DataTableColumnHeader";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useToast } from "@/components/ui/use-toast";
 import { Master } from "@/types/master";
 import { GetResponse } from "@/types/response";
 import { FetchQueryOptions, QueryClient, useQuery } from "@tanstack/react-query";
@@ -12,8 +11,6 @@ import { DataTableRowActions } from "./components/DataTableRowActions";
 import { Sheet } from "@/components/ui/sheet";
 import MasterDetailSheet from "./components/MasterDetailSheet";
 import DataTable from "@/components/data-table/DataTable";
-import DeleteDialog from "./components/DeleteDialog";
-import { AlertDialog } from "@/components/ui/alert-dialog";
 
 export const mastersQuery: FetchQueryOptions<Master[]> = {
   queryKey: ["masters"],
@@ -33,45 +30,14 @@ export const loader = (queryClient: QueryClient) => async () => {
 const masterHelper = createColumnHelper<Master>();
 
 export default function MasterPage() {
-  const [shownProductId, setShownProductId] = useState<string>("");
-  const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
+  const [shownId, setShownId] = useState<string>("");
 
-  const { toast } = useToast();
   const initialData = useLoaderData() as Awaited<ReturnType<ReturnType<typeof loader>>>;
   const { data: masters } = useQuery({ ...mastersQuery, initialData });
 
   const onPreviewClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     const id = e.currentTarget.value;
-    setShownProductId(id);
-  };
-
-  const onDeleteClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-    const id = e.currentTarget.value;
-    setDeleteProductId(id);
-  };
-
-  const onSubmitDelete = async () => {
-    if (deleteProductId === null) return;
-
-    try {
-      //   await deleteProductMutate({ id: deleteProductId });
-
-      toast({
-        title: "Successfully deleted product",
-        description: `Product with id: ${deleteProductId} has been deleted.`,
-        variant: "default",
-      });
-    } catch (e) {
-      console.error(e);
-
-      toast({
-        title: "Failed deleting product",
-        description: "An unexpected error has occured.",
-        variant: "destructive",
-      });
-    } finally {
-      setDeleteProductId(null);
-    }
+    setShownId(id);
   };
 
   const columns: ColumnDef<Master, string>[] = useMemo(
@@ -115,30 +81,21 @@ export default function MasterPage() {
       }),
       masterHelper.display({
         id: "actions",
-        cell: ({ row }) => (
-          <DataTableRowActions
-            row={row}
-            onPreviewClick={onPreviewClick}
-            onDeleteClick={onDeleteClick}
-          />
-        ),
+        cell: ({ row }) => <DataTableRowActions row={row} onPreviewClick={onPreviewClick} />,
       }),
     ],
     []
   );
 
   return (
-    <AlertDialog>
-      <DeleteDialog onCancel={() => setDeleteProductId(null)} onSubmit={onSubmitDelete} />
-      <Sheet>
-        <main className="space-y-4 p-8 pt-6">
-          <h1 className="text-3xl font-bold tracking-tight">Masters</h1>
-          <MasterDetailSheet id={shownProductId} />
-          <div className="w-full">
-            <DataTable data={masters} columns={columns} />
-          </div>
-        </main>
-      </Sheet>
-    </AlertDialog>
+    <Sheet>
+      <main className="space-y-4 p-8 pt-6">
+        <h1 className="text-3xl font-bold tracking-tight">Masters</h1>
+        <MasterDetailSheet id={+shownId} />
+        <div className="w-full">
+          <DataTable data={masters} columns={columns} />
+        </div>
+      </main>
+    </Sheet>
   );
 }
