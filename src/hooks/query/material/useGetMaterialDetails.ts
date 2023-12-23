@@ -7,7 +7,7 @@ import { AxiosError } from "axios";
 type DetailsResponse = GetResponse<MaterialItem>;
 
 export default function useGetMaterialDetails(
-  itemCode: string,
+  itemCode: string | null,
   options: Partial<UndefinedInitialDataOptions<DetailsResponse, AxiosError>> = {}
 ) {
   return useQuery<DetailsResponse, AxiosError>({

@@ -68,7 +68,7 @@ function MaterialList({ materials }: { materials: MaterialBOM }) {
           return item ? (
             <li key={mat.item_code}>
               <Link
-                to={`#${item.item_code}`}
+                to={`/materials?details=${item.item_code}`}
                 className={cn(buttonVariants({ variant: "outline" }), "justify-start")}
               >
                 <span>{item.item_code}</span>

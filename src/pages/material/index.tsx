@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLoaderData, useSearchParams } from "react-router-dom";
 import { PlusIcon } from "lucide-react";
 import { FetchQueryOptions, QueryClient, useQuery } from "@tanstack/react-query";
 import type { TableMeta } from "@tanstack/react-table";
@@ -12,6 +12,7 @@ import AddSheet from "./components/AddSheet";
 import { MaterialItem } from "@/types/material";
 import { columns } from "./data/columns";
 import EditSheet from "./components/EditSheet";
+import DetailSheet from "./components/DetailSheet";
 
 export const materialsQuery: FetchQueryOptions<MaterialItem[]> = {
   queryKey: ["materials"],
@@ -28,17 +29,13 @@ export const loader = (queryClient: QueryClient) => async () => {
   );
 };
 
-declare module "@tanstack/react-table" {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface TableMeta<TData> {
-    material: {
-      onUpdateClick: (item_code: string) => void;
-    };
-  }
-}
-
 export default function MaterialPage() {
-  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [detailsOpen, setDetailsOpen] = useState<boolean>(
+    () => searchParams.get("details") !== null
+  );
+  const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editId, setEditId] = useState<string>("");
 
@@ -48,11 +45,28 @@ export default function MaterialPage() {
   const meta: TableMeta<MaterialItem> = {
     material: {
       onUpdateClick(item_code) {
-        setEditId(item_code);
         setEditModalOpen(true);
+        setEditId(item_code);
+      },
+      onDetailsClick(item_code: string) {
+        setDetailsOpen(true);
+        setSearchParams({ details: item_code });
       },
     },
   };
+
+  useEffect(() => {
+    console.log("Close");
+    const timeout = !detailsOpen
+      ? setTimeout(() => {
+          setSearchParams();
+        }, 300)
+      : undefined;
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [detailsOpen]);
 
   return (
     <main className="space-y-4 p-8 pt-6">
@@ -74,6 +88,9 @@ export default function MaterialPage() {
             open={editModalOpen}
             onSuccess={() => setEditModalOpen(false)}
           />
+        </Sheet>
+        <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
+          <DetailSheet itemCode={searchParams.get("details")} open={detailsOpen} />
         </Sheet>
         <DataTable data={materials} columns={columns} meta={meta} />
       </div>

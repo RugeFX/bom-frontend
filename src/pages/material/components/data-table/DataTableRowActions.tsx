@@ -10,11 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { materialSchema } from "../../data/schema";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import DeleteDialog from "../../../../components/dialog/DeleteDialog";
-import DetailSheet from "../DetailSheet";
+import DeleteDialog from "@/components/dialog/DeleteDialog";
 import { useToast } from "@/components/ui/use-toast";
-import { useState } from "react";
 import useDeleteMaterial from "@/hooks/query/material/useDeleteMaterial";
 
 interface DataTableRowActionsProps<TData> {
@@ -24,8 +21,6 @@ interface DataTableRowActionsProps<TData> {
 
 export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsProps<TData>) {
   const data = materialSchema.parse(row.original);
-
-  const [detailsOpen, setDetailsOpen] = useState(false);
 
   const { toast } = useToast();
   const { mutateAsync: deleteMutate } = useDeleteMaterial();
@@ -51,20 +46,18 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
     }
   };
 
-  // TODO: use query search params for details
   return (
     <div className="flex gap-4 items-center justify-center">
-      <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DetailSheet itemCode={data.item_code} open={detailsOpen} />
-        <SheetTrigger asChild>
-          <Button variant="ghost" className="flex h-8 w-8 p-0 data-[state=open]:bg-muted">
-            <EyeOpenIcon className="h-4 w-4 text-primary" />
-            <span className="sr-only">Show preview</span>
-          </Button>
-        </SheetTrigger>
-      </Sheet>
+      <Button
+        variant="ghost"
+        className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+        onClick={() => table.options.meta?.material.onDetailsClick(data.item_code)}
+      >
+        <EyeOpenIcon className="h-4 w-4 text-primary" />
+        <span className="sr-only">Show preview</span>
+      </Button>
       <AlertDialog>
-        <DeleteDialog onSubmit={() => onDelete()} />
+        <DeleteDialog onSubmit={onDelete} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex h-8 w-8 p-0 data-[state=open]:bg-muted">

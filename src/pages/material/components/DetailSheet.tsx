@@ -6,9 +6,15 @@ import { parseDateStringToLocale } from "@/lib/utils";
 import type { MaterialItem } from "@/types/material";
 import { extractModelFromValue } from "../utils";
 
-export default function DetailSheet({ itemCode, open }: { itemCode: string; open: boolean }) {
+export default function DetailSheet({
+  itemCode,
+  open,
+}: {
+  itemCode: string | null;
+  open: boolean;
+}) {
   const { data, isLoading, isError, isSuccess } = useGetMaterialDetails(itemCode, {
-    enabled: open,
+    enabled: open && itemCode !== null,
   });
 
   return (
