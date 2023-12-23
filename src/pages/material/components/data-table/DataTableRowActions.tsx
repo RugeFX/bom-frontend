@@ -33,7 +33,7 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
   const onDelete = async () => {
     try {
       const { id, model } = data;
-      await deleteMutate({ id, model });
+      await deleteMutate({ id, model: model.split("_")[0] });
 
       toast({
         title: "Successfully deleted item",

@@ -273,7 +273,7 @@ export default function MaterialForm(props: MaterialFormProps) {
                         >
                           {field.value
                             ? filteredSize.find((size) => size.id === field.value)?.name
-                            : "Select a model..."}
+                            : "Select a size..."}
                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
