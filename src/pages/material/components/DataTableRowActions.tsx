@@ -1,5 +1,5 @@
 import { DotsHorizontalIcon, EyeOpenIcon } from "@radix-ui/react-icons";
-import { Row } from "@tanstack/react-table";
+import { Row, Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,10 +8,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { generalSchema } from "../data/schema";
+import { materialSchema } from "../data/schema";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import DeleteDialog from "./DeleteDialog";
+import DeleteDialog from "../../../components/dialog/DeleteDialog";
 import DetailSheet from "./DetailSheet";
 import { useToast } from "@/components/ui/use-toast";
 import useDeleteGeneral from "@/hooks/query/general/useDeleteGeneral";
@@ -19,19 +19,20 @@ import { useState } from "react";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
-  onEditClick: (id: number) => void;
+  table: Table<TData>;
 }
 
-export function DataTableRowActions<TData>({ row, onEditClick }: DataTableRowActionsProps<TData>) {
-  const general = generalSchema.parse(row.original);
+export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsProps<TData>) {
+  const data = materialSchema.parse(row.original);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const { toast } = useToast();
   const { mutateAsync: deleteGeneralMutate } = useDeleteGeneral();
 
-  const onDelete = async (id: number) => {
+  const onDelete = async () => {
     try {
+      const { id } = data;
       await deleteGeneralMutate({ id: String(id) });
 
       toast({
@@ -50,10 +51,11 @@ export function DataTableRowActions<TData>({ row, onEditClick }: DataTableRowAct
     }
   };
 
+  // TODO: use query search params for details
   return (
     <div className="flex gap-4 items-center justify-center">
       <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DetailSheet id={general.id} open={detailsOpen} />
+        <DetailSheet itemCode={data.item_code} open={detailsOpen} />
         <SheetTrigger asChild>
           <Button variant="ghost" className="flex h-8 w-8 p-0 data-[state=open]:bg-muted">
             <EyeOpenIcon className="h-4 w-4 text-primary" />
@@ -62,7 +64,7 @@ export function DataTableRowActions<TData>({ row, onEditClick }: DataTableRowAct
         </SheetTrigger>
       </Sheet>
       <AlertDialog>
-        <DeleteDialog onSubmit={() => onDelete(general.id)} />
+        <DeleteDialog onSubmit={() => onDelete()} />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex h-8 w-8 p-0 data-[state=open]:bg-muted">
@@ -71,7 +73,11 @@ export function DataTableRowActions<TData>({ row, onEditClick }: DataTableRowAct
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuItem onClick={() => onEditClick(general.id)}>Edit</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => table.options.meta?.material.onUpdateClick(data.item_code)}
+            >
+              Edit
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <AlertDialogTrigger className="w-full">Delete</AlertDialogTrigger>
             </DropdownMenuItem>

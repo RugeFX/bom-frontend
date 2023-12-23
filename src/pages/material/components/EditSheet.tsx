@@ -1,20 +1,19 @@
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import useGetGeneralDetails from "@/hooks/query/general/useGetGeneralDetails";
-import GeneralForm from "./GeneralForm";
+import MaterialForm from "./MaterialForm";
+import useGetMaterialDetails from "@/hooks/query/material/useGetMaterialDetails";
 
-export default function Up({
-  id,
+export default function EditSheet({
+  itemCode,
   open,
   onSuccess,
 }: {
-  id: number;
+  itemCode: string;
   open: boolean;
-  onSuccess: (id: number) => void;
+  onSuccess: (itemCode: string) => void;
 }) {
-  const { data, isLoading, isError, isSuccess } = useGetGeneralDetails(id, {
+  const { data, isLoading, isError, isSuccess } = useGetMaterialDetails(itemCode, {
     enabled: open,
-    refetchOnMount: false,
   });
 
   return (
@@ -31,7 +30,7 @@ export default function Up({
             Error loading details!
           </h2>
         ) : (
-          isSuccess && <GeneralForm mode="update" data={data.data} onSuccess={onSuccess} />
+          isSuccess && <MaterialForm mode="update" data={data.data} onSuccess={onSuccess} />
         )}
       </div>
     </SheetContent>

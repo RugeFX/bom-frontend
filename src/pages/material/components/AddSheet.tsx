@@ -1,7 +1,7 @@
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import GeneralForm from "./GeneralForm";
+import MaterialForm from "./MaterialForm";
 
-export default function AddSheet({ onSuccess }: { onSuccess: (id: number) => void }) {
+export default function AddSheet({ onSuccess }: { onSuccess: (itemCode: string) => void }) {
   return (
     <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
       <SheetHeader>
@@ -9,7 +9,7 @@ export default function AddSheet({ onSuccess }: { onSuccess: (id: number) => voi
         <SheetDescription>Create a new item.</SheetDescription>
       </SheetHeader>
       <div className="mt-4 space-y-4">
-        <GeneralForm mode="add" onSuccess={onSuccess} />
+        <MaterialForm mode="add" onSuccess={onSuccess} />
       </div>
     </SheetContent>
   );

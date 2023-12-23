@@ -4,7 +4,8 @@ import NotFoundPage from "@/pages/NotFoundPage";
 import DashboardLayout from "@/layouts/dashboard";
 import HomePage from "@/pages/dashboard";
 import MasterPage, { loader as masterLoader } from "@/pages/master";
-import GeneralPage, { loader as generalLoader } from "@/pages/general";
+import BomPage, { loader as bomLoader } from "@/pages/bom";
+import MaterialPage, { loader as materialLoader } from "@/pages/material";
 
 export const router = (queryClient: QueryClient) =>
   createBrowserRouter([
@@ -21,9 +22,14 @@ export const router = (queryClient: QueryClient) =>
           loader: masterLoader(queryClient),
         },
         {
-          path: "/generals",
-          element: <GeneralPage />,
-          loader: generalLoader(queryClient),
+          path: "/materials",
+          element: <MaterialPage />,
+          loader: materialLoader(queryClient),
+        },
+        {
+          path: "/boms",
+          element: <BomPage />,
+          loader: bomLoader(queryClient),
         },
       ],
     },

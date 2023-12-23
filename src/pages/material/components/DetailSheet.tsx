@@ -1,14 +1,16 @@
 import { Separator } from "@/components/ui/separator";
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import useGetGeneralDetails from "@/hooks/query/general/useGetGeneralDetails";
+import useGetMaterialDetails from "@/hooks/query/material/useGetMaterialDetails";
 import { parseDateStringToLocale } from "@/lib/utils";
-import { General } from "@/types/general";
+import type { MaterialItem } from "@/types/material";
+import { extractModelFromValue } from "../utils";
 
-export default function DetailSheet({ id, open }: { id: number; open: boolean }) {
-  const { data, isLoading, isError, isSuccess } = useGetGeneralDetails(id, {
+export default function DetailSheet({ itemCode, open }: { itemCode: string; open: boolean }) {
+  const { data, isLoading, isError, isSuccess } = useGetMaterialDetails(itemCode, {
     enabled: open,
   });
+
   return (
     <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
       <SheetHeader>
@@ -30,7 +32,7 @@ export default function DetailSheet({ id, open }: { id: number; open: boolean })
   );
 }
 
-function Details({ data }: { data: General }) {
+function Details({ data }: { data: MaterialItem }) {
   return (
     <>
       <div className="flex flex-col">
@@ -44,15 +46,19 @@ function Details({ data }: { data: General }) {
       </div>
       <Separator />
       <div className="flex flex-col">
-        <span className="text-muted-foreground text-sm">Color</span>
-        <h3 className="font-semibold">{data.color?.name}</h3>
+        <span className="text-muted-foreground text-sm">Model</span>
+        <h3 className="font-semibold">{extractModelFromValue(data.model)?.label}</h3>
       </div>
       <Separator />
-      <div className="flex flex-col">
-        <span className="text-muted-foreground text-sm">Quantity</span>
-        <h3 className="font-semibold">{data.quantity}</h3>
-      </div>
-      <Separator />
+      {data.attributes.size !== null && (
+        <>
+          <div className="flex flex-col">
+            <span className="text-muted-foreground text-sm">Size</span>
+            <h3 className="font-semibold">{data.attributes.size.name}</h3>
+          </div>
+          <Separator />
+        </>
+      )}
       <div className="flex flex-col">
         <span className="text-muted-foreground text-sm">Created At</span>
         <h3 className="font-semibold">{parseDateStringToLocale(data.created_at)}</h3>
