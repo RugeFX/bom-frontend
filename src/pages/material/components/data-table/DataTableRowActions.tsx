@@ -8,14 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { materialSchema } from "../data/schema";
+import { materialSchema } from "../../data/schema";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import DeleteDialog from "../../../components/dialog/DeleteDialog";
-import DetailSheet from "./DetailSheet";
+import DeleteDialog from "../../../../components/dialog/DeleteDialog";
+import DetailSheet from "../DetailSheet";
 import { useToast } from "@/components/ui/use-toast";
-import useDeleteGeneral from "@/hooks/query/general/useDeleteGeneral";
 import { useState } from "react";
+import useDeleteMaterial from "@/hooks/query/material/useDeleteMaterial";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -28,12 +28,12 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const { toast } = useToast();
-  const { mutateAsync: deleteGeneralMutate } = useDeleteGeneral();
+  const { mutateAsync: deleteMutate } = useDeleteMaterial();
 
   const onDelete = async () => {
     try {
-      const { id } = data;
-      await deleteGeneralMutate({ id: String(id) });
+      const { id, model } = data;
+      await deleteMutate({ id, model });
 
       toast({
         title: "Successfully deleted item",
