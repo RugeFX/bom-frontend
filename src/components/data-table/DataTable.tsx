@@ -21,6 +21,7 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   flexRender,
+  TableMeta,
 } from "@tanstack/react-table";
 import { DataTableToolbar } from "./DataTableToolbar";
 import { DataTablePagination } from "./DataTablePagination";
@@ -28,9 +29,14 @@ import { DataTablePagination } from "./DataTablePagination";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  meta?: TableMeta<TData>;
 }
 
-export default function DataTable<TData, TValue>({ data, columns }: DataTableProps<TData, TValue>) {
+export default function DataTable<TData, TValue>({
+  data,
+  columns,
+  meta,
+}: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -59,6 +65,7 @@ export default function DataTable<TData, TValue>({ data, columns }: DataTablePro
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    meta,
   });
 
   return (

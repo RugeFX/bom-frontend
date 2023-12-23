@@ -108,7 +108,7 @@ export default function MaterialForm(props: MaterialFormProps) {
       console.error(e);
 
       if (isAxiosError<{ message: string; error: { [key: string]: string[] } }>(e)) {
-        const errFields = ["item_code", "name", "quantity", "color_id"];
+        const errFields = ["item_code", "name", "quantity", "size_id"];
 
         if (e.response && e.response.status === 400) {
           const errors = e.response.data.error ?? {};

@@ -6,6 +6,7 @@ import HomePage from "@/pages/dashboard";
 import MasterPage, { loader as masterLoader } from "@/pages/master";
 import BomPage, { loader as bomLoader } from "@/pages/bom";
 import MaterialPage, { loader as materialLoader } from "@/pages/material";
+import SizePage, { loader as sizeLoader } from "@/pages/size";
 
 export const router = (queryClient: QueryClient) =>
   createBrowserRouter([
@@ -20,6 +21,11 @@ export const router = (queryClient: QueryClient) =>
           path: "/masters",
           element: <MasterPage />,
           loader: masterLoader(queryClient),
+        },
+        {
+          path: "/sizes",
+          element: <SizePage />,
+          loader: sizeLoader(queryClient),
         },
         {
           path: "/materials",

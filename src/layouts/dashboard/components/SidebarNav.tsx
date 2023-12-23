@@ -1,5 +1,12 @@
 import { NavLink } from "react-router-dom";
-import { type LucideIcon, Home, PackageIcon, ReceiptIcon, DatabaseIcon } from "lucide-react";
+import {
+  type LucideIcon,
+  Home,
+  PackageIcon,
+  ReceiptIcon,
+  DatabaseIcon,
+  RulerIcon,
+} from "lucide-react";
 import { SheetContent } from "@/components/ui/sheet";
 
 const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
@@ -13,11 +20,11 @@ const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
     to: "/masters",
     Icon: DatabaseIcon,
   },
-  // {
-  //   name: "Generals",
-  //   to: "/generals",
-  //   Icon: PackageIcon,
-  // },
+  {
+    name: "Sizes",
+    to: "/sizes",
+    Icon: RulerIcon,
+  },
   {
     name: "Materials",
     to: "/materials",

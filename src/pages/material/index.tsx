@@ -56,7 +56,6 @@ export default function MaterialPage() {
   };
 
   useEffect(() => {
-    console.log("Close");
     const timeout = !detailsOpen
       ? setTimeout(() => {
           setSearchParams();
