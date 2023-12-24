@@ -6,6 +6,7 @@ import {
   ReceiptIcon,
   DatabaseIcon,
   RulerIcon,
+  WarehouseIcon,
 } from "lucide-react";
 import { SheetContent } from "@/components/ui/sheet";
 
@@ -34,6 +35,11 @@ const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
     name: "BOMs",
     to: "/boms",
     Icon: ReceiptIcon,
+  },
+  {
+    name: "Plans",
+    to: "/plans",
+    Icon: WarehouseIcon,
   },
 ];
 
@@ -66,7 +72,7 @@ function SidebarItems() {
           }
           to={to}
         >
-          <Icon className="w-5 h-5" />
+          <Icon className="w-5 h-5 shrink-0" />
           <span className="flex-1">{name}</span>
         </NavLink>
       ))}

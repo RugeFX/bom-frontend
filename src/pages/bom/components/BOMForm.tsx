@@ -65,8 +65,6 @@ export default function BOMForm(props: BOMFormProps) {
       variant: "default",
     });
 
-    console.log(res);
-
     form.reset({
       bom_code: res.bom_code,
       items: form.getValues("items") ?? [],
@@ -96,7 +94,6 @@ export default function BOMForm(props: BOMFormProps) {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
-    console.log(payload);
     try {
       if (props.mode === "update") {
         await updateHandler(payload);

@@ -7,6 +7,7 @@ import MasterPage, { loader as masterLoader } from "@/pages/master";
 import BomPage, { loader as bomLoader } from "@/pages/bom";
 import MaterialPage, { loader as materialLoader } from "@/pages/material";
 import SizePage, { loader as sizeLoader } from "@/pages/size";
+import PlanPage, { loader as planLoader } from "@/pages/plan";
 
 export const router = (queryClient: QueryClient) =>
   createBrowserRouter([
@@ -36,6 +37,11 @@ export const router = (queryClient: QueryClient) =>
           path: "/boms",
           element: <BomPage />,
           loader: bomLoader(queryClient),
+        },
+        {
+          path: "/plans",
+          element: <PlanPage />,
+          loader: planLoader(queryClient),
         },
       ],
     },
