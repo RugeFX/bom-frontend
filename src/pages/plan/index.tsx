@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { useQuery, type FetchQueryOptions, type QueryClient } from "@tanstack/react-query";
-import apiClient from "@/api/apiClient";
-import type { GetResponse } from "@/types/response";
+import { type QueryClient } from "@tanstack/react-query";
 import {
   Sheet,
   SheetContent,
@@ -19,14 +17,7 @@ import { columns } from "./data/columns";
 import type { TableMeta } from "@tanstack/react-table";
 import type { Plan } from "@/types/plan";
 import PlanForm from "./components/PlanForm";
-
-export const plansQuery: FetchQueryOptions<Plan[]> = {
-  queryKey: ["plans"],
-  queryFn: async () => {
-    const res = await apiClient.get<GetResponse<Plan[]>>("plans");
-    return res.data.data;
-  },
-};
+import useGetPlans, { plansQuery } from "@/hooks/query/plan/useGetPlans";
 
 export const loader = (queryClient: QueryClient) => async () => {
   return (
@@ -41,7 +32,7 @@ export default function PlanPage() {
   const [editId, setEditId] = useState<number | null>(null);
 
   const initialData = (useLoaderData() ?? []) as Awaited<ReturnType<ReturnType<typeof loader>>>;
-  const { data } = useQuery({ ...plansQuery, initialData });
+  const { data } = useGetPlans({ initialData });
 
   const meta: TableMeta<Plan> = {
     default: {

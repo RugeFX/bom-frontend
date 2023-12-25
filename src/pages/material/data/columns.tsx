@@ -2,7 +2,7 @@ import { DataTableColumnHeader } from "@/components/data-table/DataTableColumnHe
 import { MaterialItem } from "@/types/material";
 import { ColumnDef } from "@tanstack/react-table";
 import { DataTableRowActions } from "../components/data-table/DataTableRowActions";
-import { models } from "./data";
+import { models } from "@/lib/models";
 
 export const columns: ColumnDef<MaterialItem>[] = [
   {

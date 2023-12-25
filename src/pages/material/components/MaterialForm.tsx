@@ -16,11 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MaterialItem } from "@/types/material";
-import { extractModelFromValue } from "../utils";
+import { extractModelFromValue } from "@/lib/models";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { Command, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { models } from "../data/data";
+import { models } from "@/lib/models";
 import { cn } from "@/lib/utils";
 import useGetSizes from "@/hooks/query/size/useGetSizes";
 import { useMemo } from "react";

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useGetMaterialDetails from "@/hooks/query/material/useGetMaterialDetails";
 import { parseDateStringToLocale } from "@/lib/utils";
 import type { MaterialItem } from "@/types/material";
-import { extractModelFromValue } from "../utils";
+import { extractModelFromValue } from "@/lib/models";
 
 export default function DetailSheet({
   itemCode,

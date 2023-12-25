@@ -1,18 +1,3 @@
-import { CheckIcon, MinusSquareIcon } from "lucide-react";
-
-export const statuses = [
-  {
-    value: "added",
-    label: "Added",
-    icon: CheckIcon,
-  },
-  {
-    value: "vacant",
-    label: "Not added",
-    icon: MinusSquareIcon,
-  },
-];
-
 export const models = [
   {
     value: "hardcases",
@@ -29,5 +14,9 @@ export const models = [
   {
     value: "medicines",
     label: "Medicines",
+  },
+  {
+    value: "motors",
+    label: "Motors",
   },
 ];

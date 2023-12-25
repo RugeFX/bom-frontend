@@ -41,3 +41,7 @@ export const models: { id: string; value: ModelValues; label: string; icon: Luci
     icon: BikeIcon,
   },
 ] as const;
+
+export const extractModelFromValue = (model: string) => {
+  return models.find((m) => model.split("_")[0] === m.value);
+};

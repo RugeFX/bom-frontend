@@ -1,20 +1,31 @@
 import apiClient from "@/api/apiClient";
-import { type UndefinedInitialDataOptions, useQuery } from "@tanstack/react-query";
+import {
+  type DefinedInitialDataOptions,
+  type FetchQueryOptions,
+  useQuery,
+} from "@tanstack/react-query";
 import type { GetResponse } from "@/types/response";
 import type { Plan } from "@/types/plan";
 import type { AxiosError } from "axios";
 
 type DetailsResponse = GetResponse<Plan[]>;
 
+export const plansQuery: FetchQueryOptions<Plan[], AxiosError> = {
+  queryKey: ["plans"],
+  async queryFn() {
+    const res = await apiClient.get<DetailsResponse>(`plans`);
+    return res.data.data;
+  },
+};
+
 export default function useGetPlans(
-  options: Partial<UndefinedInitialDataOptions<Plan[], AxiosError>> = {}
+  options: Omit<DefinedInitialDataOptions<Plan[], AxiosError, Plan[]>, "queryKey" | "queryFn"> = {
+    initialData: [],
+  }
 ) {
-  return useQuery<Plan[], AxiosError>({
-    queryKey: ["plans"],
-    async queryFn() {
-      const res = await apiClient.get<DetailsResponse>(`plans`);
-      return res.data.data;
-    },
+  return useQuery({
     ...options,
+    ...plansQuery,
+    initialData: options.initialData,
   });
 }
