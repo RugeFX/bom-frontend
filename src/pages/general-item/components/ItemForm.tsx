@@ -155,20 +155,25 @@ export default function ItemForm(props: FormProps) {
           <FormField
             control={form.control}
             name="plan_code"
-            render={({ field }) => (
+            render={({ field: { value, onChange, ...rest } }) => (
               <FormItem>
                 <FormLabel>Plan code</FormLabel>
                 <Dialog>
                   <PlanLookup
-                    value={field.value}
+                    value={value}
                     onSelect={(code) => {
-                      field.onChange(code);
+                      onChange(code);
                     }}
                   />
                   <FormControl>
                     <DialogTrigger asChild>
-                      <Button variant="outline" type="button" className="w-full justify-between">
-                        {field.value || "Select a Plan code"}
+                      <Button
+                        variant="outline"
+                        type="button"
+                        className="w-full justify-between"
+                        {...rest}
+                      >
+                        {value || "Select a Plan code"}
                         <TableIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </DialogTrigger>

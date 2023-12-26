@@ -21,18 +21,21 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   flexRender,
+  TableMeta,
 } from "@tanstack/react-table";
-import { DataTableToolbar } from "./DataTableToolbar";
+import { ItemDataTableToolbar } from "./ItemDataTableToolbar";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  meta?: TableMeta<TData>;
 }
 
-export default function DataTableLookup<TData, TValue>({
+export default function ItemDataTable<TData, TValue>({
   data,
   columns,
+  meta,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -62,11 +65,12 @@ export default function DataTableLookup<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     getFacetedRowModel: getFacetedRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    meta,
   });
 
   return (
     <div className="w-full space-y-4">
-      <DataTableToolbar table={table} filter={globalFilter} setFilter={setGlobalFilter} />
+      <ItemDataTableToolbar table={table} filter={globalFilter} setFilter={setGlobalFilter} />
       <div className="rounded-lg border">
         <Table>
           <TableHeader>

@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import EditSheet from "./components/EditSheet";
-import DataTable from "@/components/data-table/DataTable";
+import ItemDataTable from "./components/data-table/ItemDataTable";
 import { columns } from "./data/columns";
 import type { TableMeta } from "@tanstack/react-table";
 import type { BaseItem } from "@/types/items";
@@ -82,7 +82,7 @@ export default function GeneralItemPage() {
         <Sheet open={editModalOpen} onOpenChange={setEditModalOpen}>
           <EditSheet id={editId} open={editModalOpen} onSuccess={() => setEditModalOpen(false)} />
         </Sheet>
-        <DataTable data={data} columns={columns} meta={meta} />
+        <ItemDataTable data={data} columns={columns} meta={meta} />
       </div>
     </main>
   );

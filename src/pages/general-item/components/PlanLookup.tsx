@@ -74,7 +74,7 @@ export default function PlanLookup({ value, onSelect }: LookupProps) {
         <DialogTitle>Lookup Plans</DialogTitle>
         <DialogDescription>Search for Plans to select.</DialogDescription>
       </DialogHeader>
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto p-2">
         <DataTable data={plans} columns={columns} />
       </div>
       <DialogFooter className="sm:justify-start">

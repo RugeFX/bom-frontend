@@ -24,6 +24,7 @@ export const columns: ColumnDef<BaseItem>[] = [
     cell: ({ row }) => {
       return <div className="font-medium">{row.getValue("status")}</div>;
     },
+    filterFn: (row, id, value) => (value as string[]).includes(row.getValue(id)),
   },
   {
     id: "actions",

@@ -13,7 +13,7 @@ import { models } from "@/lib/models";
 import { DataTableColumnHeader } from "@/components/data-table/DataTableColumnHeader";
 import useGetBoms from "@/hooks/query/bom/useGetBoms";
 import type { BOM } from "@/types/bom";
-import DataTableLookup from "./data-table/DataTableLookup";
+import BOMDataTable from "./data-table/BOMDataTable";
 
 interface LookupProps {
   value: string;
@@ -96,7 +96,9 @@ export default function BOMLookup({ value, onSelect }: LookupProps) {
         <DialogTitle>Lookup BOMs</DialogTitle>
         <DialogDescription>Search for BOMs to select.</DialogDescription>
       </DialogHeader>
-      <DataTableLookup data={boms} columns={columns} />
+      <div className="overflow-x-auto p-2">
+        <BOMDataTable data={boms} columns={columns} />
+      </div>
       <DialogFooter className="sm:justify-start">
         <DialogClose asChild>
           <Button type="button" variant="secondary">
