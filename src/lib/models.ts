@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 
 export type ModelValues = "hardcases" | "helmets" | "generals" | "medicines" | "motors";
+export type ItemModelValues = "general" | "motor" | "hardcase" | "helmet" | "fak";
 
 export const models: { id: string; value: ModelValues; label: string; icon: LucideIcon }[] = [
   {

@@ -10,5 +10,8 @@ declare module "@tanstack/react-table" {
     default?: {
       onUpdateClick: (id: number) => void;
     };
+    item?: {
+      onUpdateClick: (id: string) => void;
+    };
   }
 }

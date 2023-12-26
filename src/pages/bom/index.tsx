@@ -1,12 +1,10 @@
-import apiClient from "@/api/apiClient";
 import DataTable from "@/components/data-table/DataTable";
 import { DataTableColumnHeader } from "@/components/data-table/DataTableColumnHeader";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import type { BOM } from "@/types/bom";
-import type { GetResponse } from "@/types/response";
-import { useQuery, type FetchQueryOptions, type QueryClient } from "@tanstack/react-query";
+import { useQuery, type QueryClient } from "@tanstack/react-query";
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table";
 import { PlusIcon } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -14,23 +12,7 @@ import { useLoaderData } from "react-router-dom";
 import { DataTableRowActions } from "./components/DataTableRowActions";
 import AddSheet from "./components/AddSheet";
 import EditSheet from "./components/EditSheet";
-
-export const bomsQuery: FetchQueryOptions<BOM[]> = {
-  queryKey: ["boms"],
-  queryFn: async () => {
-    const relations = [
-      "material.helmet",
-      "material.hardcase",
-      "material.general",
-      "material.medicine",
-    ];
-    const res = await apiClient.get<GetResponse<BOM[]>>("boms", {
-      params: { relations: relations.join(",") },
-    });
-
-    return res.data.data;
-  },
-};
+import { bomsQuery } from "@/hooks/query/bom/useGetBoms";
 
 export const loader = (queryClient: QueryClient) => async () => {
   return (

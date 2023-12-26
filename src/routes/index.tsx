@@ -8,6 +8,7 @@ import BomPage, { loader as bomLoader } from "@/pages/bom";
 import MaterialPage, { loader as materialLoader } from "@/pages/material";
 import SizePage, { loader as sizeLoader } from "@/pages/size";
 import PlanPage, { loader as planLoader } from "@/pages/plan";
+import GeneralItemPage, { loader as generalItemLoader } from "@/pages/general-item";
 import ScannerPage from "@/pages/scanner";
 
 export const router = (queryClient: QueryClient) =>
@@ -43,6 +44,11 @@ export const router = (queryClient: QueryClient) =>
           path: "/plans",
           element: <PlanPage />,
           loader: planLoader(queryClient),
+        },
+        {
+          path: "/general-items",
+          element: <GeneralItemPage />,
+          loader: generalItemLoader(queryClient),
         },
         {
           path: "/scan",

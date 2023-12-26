@@ -7,10 +7,24 @@ import {
   DatabaseIcon,
   RulerIcon,
   WarehouseIcon,
+  LibraryBigIcon,
+  CrossIcon,
+  BoxesIcon,
+  BikeIcon,
+  CassetteTapeIcon,
+  ChevronDownIcon,
 } from "lucide-react";
 import { SheetContent } from "@/components/ui/sheet";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
-const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
+type SidebarItem = { name: string; Icon: LucideIcon } & (
+  | { to?: undefined; subMenus: { name: string; Icon: LucideIcon; to: string }[] }
+  | { to: string }
+);
+
+const sidebarItems: SidebarItem[] = [
   {
     name: "Home",
     to: "/",
@@ -41,6 +55,32 @@ const sidebarItems: { name: string; to: string; Icon: LucideIcon }[] = [
     to: "/plans",
     Icon: WarehouseIcon,
   },
+  {
+    name: "Items",
+    Icon: LibraryBigIcon,
+    subMenus: [
+      {
+        name: "General",
+        Icon: BoxesIcon,
+        to: "/general-items",
+      },
+      {
+        name: "Motor",
+        Icon: BikeIcon,
+        to: "/motor-items",
+      },
+      {
+        name: "Hardcase",
+        Icon: CassetteTapeIcon,
+        to: "/motor-items",
+      },
+      {
+        name: "FAK",
+        Icon: CrossIcon,
+        to: "/fak-items",
+      },
+    ],
+  },
 ];
 
 export default function SidebarNav({ mobile = false }: { mobile?: boolean }) {
@@ -60,22 +100,72 @@ export default function SidebarNav({ mobile = false }: { mobile?: boolean }) {
 function SidebarItems() {
   return (
     <div className="space-y-1">
-      {sidebarItems.map(({ name, to, Icon }) => (
-        <NavLink
-          key={name}
-          className={({ isActive }) =>
-            `flex w-full justify-start items-center gap-5 p-3 rounded-lg text-sm transition-colors ${
-              isActive
-                ? "text-primary-foreground bg-primary"
-                : "hover:text-primary hover:bg-muted text-muted-foreground"
-            }`
-          }
-          to={to}
-        >
-          <Icon className="w-5 h-5 shrink-0" />
-          <span className="flex-1">{name}</span>
-        </NavLink>
-      ))}
+      {sidebarItems.map((item) =>
+        item.to !== undefined ? (
+          <NavLink
+            key={item.name}
+            className={({ isActive }) =>
+              `flex w-full justify-start items-center gap-5 p-3 rounded-lg text-sm transition-colors ${
+                isActive
+                  ? "text-primary-foreground bg-primary"
+                  : "hover:text-primary hover:bg-muted text-muted-foreground"
+              }`
+            }
+            to={item.to}
+          >
+            <item.Icon className="w-5 h-5 shrink-0" />
+            <span className="flex-1">{item.name}</span>
+          </NavLink>
+        ) : (
+          <GroupItem key={item.name} name={item.name} Icon={item.Icon} subMenus={item.subMenus} />
+        )
+      )}
     </div>
+  );
+}
+
+function GroupItem({
+  name,
+  Icon,
+  subMenus,
+}: {
+  name: string;
+  Icon: LucideIcon;
+  subMenus: { name: string; to: string; Icon: LucideIcon }[];
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Collapsible key={name} open={open} onOpenChange={() => setOpen((prev) => !prev)}>
+      <CollapsibleTrigger
+        className={`flex w-full justify-start items-center gap-5 p-3 rounded-lg text-sm transition-colors hover:text-primary hover:bg-muted text-muted-foreground`}
+      >
+        <Icon className="w-5 h-5" />
+        <span className="flex-1 text-start">{name}</span>
+        <ChevronDownIcon
+          className={cn("w-5 h-5 transition-transform", open ? "-rotate-180" : "rotate-0")}
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent
+        className={`mt-1 flex flex-col gap-1 rounded-lg bg-muted overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up [&[hidden]]:animate-none [&[hidden]]:mt-0`}
+      >
+        {subMenus.map((item) => (
+          <NavLink
+            key={item.name}
+            className={({ isActive }) =>
+              `flex w-full justify-start items-center gap-5 p-3 rounded-lg text-sm transition-colors ${
+                isActive
+                  ? "text-primary-foreground bg-primary"
+                  : "hover:text-primary hover:bg-muted text-muted-foreground"
+              }`
+            }
+            to={item.to}
+          >
+            <item.Icon className="w-5 h-5 shrink-0" />
+            <span className="flex-1">{item.name}</span>
+          </NavLink>
+        ))}
+      </CollapsibleContent>
+    </Collapsible>
   );
 }

@@ -2,7 +2,7 @@ import { Icons } from "@/components/Icons";
 import ThemeToggler from "@/components/theme/ThemeToggler";
 import { Button } from "@/components/ui/button";
 import { SheetTrigger } from "@/components/ui/sheet";
-import { List, Search } from "lucide-react";
+import { ListIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
@@ -15,7 +15,7 @@ export default function MainNav({ mobile, ...props }: MainNavProps) {
       {mobile && (
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="mr-2">
-            <List className="text-foreground" aria-label="Open sidebar" />
+            <ListIcon className="text-foreground" aria-label="Open sidebar" />
           </Button>
         </SheetTrigger>
       )}
@@ -26,18 +26,6 @@ export default function MainNav({ mobile, ...props }: MainNavProps) {
         </Link>
         <div className="flex w-full max-w-md justify-end items-center gap-2">
           <ThemeToggler />
-          <div
-            className={
-              "hidden sm:flex w-full h-10 items-center rounded-md border border-input pl-3 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2"
-            }
-          >
-            <Search className="h-5 w-5 absolute pointer-events-none" />
-            <input
-              type="search"
-              placeholder="Search"
-              className="w-full p-2 bg-background pl-8 placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-            />
-          </div>
         </div>
       </div>
     </nav>
