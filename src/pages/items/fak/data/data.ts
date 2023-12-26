@@ -1,4 +1,4 @@
-export const statuses = ["Good Condition", "Scrab", "In Rental"];
+export const statuses = ["Complete", "Incomplete", "In Rental"] as const;
 
 export const statusOptions = statuses.map((status) => ({
   label: status,

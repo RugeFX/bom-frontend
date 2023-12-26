@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { useQuery, type FetchQueryOptions, type QueryClient } from "@tanstack/react-query";
-import apiClient from "@/api/apiClient";
-import type { GetResponse } from "@/types/response";
-import type { Size } from "@/types/size";
+import { useQuery, type QueryClient, FetchQueryOptions } from "@tanstack/react-query";
 import {
   Sheet,
   SheetContent,
@@ -15,36 +12,39 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import EditSheet from "./components/EditSheet";
-import DataTable from "@/components/data-table/DataTable";
-import SizeForm from "./components/SizeForm";
-import { TableMeta } from "@tanstack/react-table";
+import ItemDataTable from "./components/data-table/ItemDataTable";
 import { columns } from "./data/columns";
+import type { TableMeta } from "@tanstack/react-table";
+import type { BaseItem } from "@/types/items";
+import type { GetResponse } from "@/types/response";
+import ItemForm from "./components/ItemForm";
+import apiClient from "@/api/apiClient";
 
-export const sizesQuery: FetchQueryOptions<Size[]> = {
-  queryKey: ["sizes"],
-  queryFn: async () => {
-    const res = await apiClient.get<GetResponse<Size[]>>("sizes");
+export const itemsQuery: FetchQueryOptions<BaseItem[]> = {
+  queryKey: ["items", "fak"],
+  async queryFn() {
+    const res = await apiClient.get<GetResponse<BaseItem[]>>("fakItems");
     return res.data.data;
   },
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
   return (
-    queryClient.getQueryData<Size[]>(sizesQuery.queryKey) ??
-    (await queryClient.fetchQuery(sizesQuery))
+    queryClient.getQueryData<BaseItem[]>(itemsQuery.queryKey) ??
+    (await queryClient.fetchQuery(itemsQuery))
   );
 };
 
-export default function SizePage() {
+export default function FAKItemPage() {
   const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-  const [editId, setEditId] = useState<number | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   const initialData = (useLoaderData() ?? []) as Awaited<ReturnType<ReturnType<typeof loader>>>;
-  const { data: sizes } = useQuery({ ...sizesQuery, initialData });
+  const { data } = useQuery({ ...itemsQuery, initialData });
 
-  const meta: TableMeta<Size> = {
-    default: {
+  const meta: TableMeta<BaseItem> = {
+    item: {
       onUpdateClick(id) {
         setEditModalOpen(true);
         setEditId(id);
@@ -55,15 +55,15 @@ export default function SizePage() {
   return (
     <main className="space-y-4 p-8 pt-6">
       <div className="flex flex-wrap w-full justify-between gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Sizes</h1>
+        <h1 className="text-3xl font-bold tracking-tight">First Aid Kit Items</h1>
         <Sheet open={addModalOpen} onOpenChange={setAddModalOpen}>
           <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
             <SheetHeader>
-              <SheetTitle>Add size</SheetTitle>
-              <SheetDescription>Create a new size.</SheetDescription>
+              <SheetTitle>Add item</SheetTitle>
+              <SheetDescription>Create a new item.</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-4">
-              <SizeForm
+              <ItemForm
                 mode="add"
                 onSuccess={() => {
                   setAddModalOpen(false);
@@ -73,7 +73,7 @@ export default function SizePage() {
           </SheetContent>
           <SheetTrigger asChild>
             <Button className="flex items-center gap-2">
-              <PlusIcon className="w-4 h-4" /> Add new size
+              <PlusIcon className="w-4 h-4" /> Add new item
             </Button>
           </SheetTrigger>
         </Sheet>
@@ -82,7 +82,7 @@ export default function SizePage() {
         <Sheet open={editModalOpen} onOpenChange={setEditModalOpen}>
           <EditSheet id={editId} open={editModalOpen} onSuccess={() => setEditModalOpen(false)} />
         </Sheet>
-        <DataTable data={sizes} columns={columns} meta={meta} />
+        <ItemDataTable data={data} columns={columns} meta={meta} />
       </div>
     </main>
   );

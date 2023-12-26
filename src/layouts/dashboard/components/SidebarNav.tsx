@@ -13,6 +13,7 @@ import {
   BikeIcon,
   CassetteTapeIcon,
   ChevronDownIcon,
+  HardHatIcon,
 } from "lucide-react";
 import { SheetContent } from "@/components/ui/sheet";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -70,9 +71,14 @@ const sidebarItems: SidebarItem[] = [
         to: "/motor-items",
       },
       {
+        name: "Helmet",
+        Icon: HardHatIcon,
+        to: "/helmet-items",
+      },
+      {
         name: "Hardcase",
         Icon: CassetteTapeIcon,
-        to: "/motor-items",
+        to: "/hardcase-items",
       },
       {
         name: "FAK",

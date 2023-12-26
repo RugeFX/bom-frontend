@@ -13,7 +13,19 @@ export default function useAddItem() {
     AxiosError,
     {
       model: ItemModelValues;
-      data: Omit<AnyItem, "id" | "created_at" | "updated_at">;
+      data: {
+        code: string;
+        bom_code: string;
+        plan_code: string;
+        name: string;
+        status: string;
+        information?: string;
+        monorack_code?: string;
+        hardcase_code?: string;
+        general?: {
+          general_code: string;
+        }[];
+      };
     }
   >({
     async mutationFn({ model, data }) {

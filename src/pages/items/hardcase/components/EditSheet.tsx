@@ -1,26 +1,26 @@
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
-import useGetSizeDetails from "@/hooks/query/size/useGetSizeDetails";
-import SizeForm from "./SizeForm";
+import ItemForm from "./ItemForm";
+import useGetItemDetails from "@/hooks/query/items/useGetItemDetails";
 
 export default function EditSheet({
   id,
   open,
   onSuccess,
 }: {
-  id: number | null;
+  id: string | null;
   open: boolean;
-  onSuccess: (id: number) => void;
+  onSuccess: (id: string) => void;
 }) {
-  const { data, isLoading, isError, isSuccess } = useGetSizeDetails(id, {
+  const { data, isLoading, isError, isSuccess } = useGetItemDetails(id, "hardcase", {
     enabled: open,
   });
 
   return (
     <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
       <SheetHeader>
-        <SheetTitle>Edit size</SheetTitle>
-        <SheetDescription>Update the details of a size.</SheetDescription>
+        <SheetTitle>Edit item</SheetTitle>
+        <SheetDescription>Update the details of an item.</SheetDescription>
       </SheetHeader>
       <div className="mt-4 space-y-4">
         {isLoading ? (
@@ -30,7 +30,7 @@ export default function EditSheet({
             Error loading details!
           </h2>
         ) : (
-          isSuccess && <SizeForm mode="update" data={data.data} onSuccess={onSuccess} />
+          isSuccess && <ItemForm mode="update" data={data.data} onSuccess={onSuccess} />
         )}
       </div>
     </SheetContent>

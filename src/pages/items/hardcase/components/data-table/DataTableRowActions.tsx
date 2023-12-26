@@ -34,7 +34,7 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
       if (!data.success) return;
 
       const { code } = data.data;
-      await deleteMutate({ code, model: "general" });
+      await deleteMutate({ code, model: "hardcase" });
 
       toast({
         title: "Successfully deleted item",

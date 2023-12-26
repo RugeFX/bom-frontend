@@ -3,9 +3,9 @@ import { Table } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DataTableFacetedFilter } from "./DataTableFacetedFilter";
-import { models } from "@/lib/models";
+import { DataTableFacetedFilter } from "@/components/data-table/DataTableFacetedFilter";
 import { DataTableViewOptions } from "@/components/data-table/DataTableViewOptions";
+import { statusOptions } from "../../data/data";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -13,7 +13,7 @@ interface DataTableToolbarProps<TData> {
   setFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export function BOMDataTableToolbar<TData>({
+export function ItemDataTableToolbar<TData>({
   table,
   filter,
   setFilter,
@@ -29,11 +29,11 @@ export function BOMDataTableToolbar<TData>({
           onChange={(event) => setFilter(event.target.value)}
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("models") && (
+        {table.getColumn("status") && (
           <DataTableFacetedFilter
-            column={table.getColumn("models")}
-            title="Model"
-            options={models}
+            column={table.getColumn("status")}
+            title="Status"
+            options={statusOptions}
           />
         )}
         {isFiltered && (

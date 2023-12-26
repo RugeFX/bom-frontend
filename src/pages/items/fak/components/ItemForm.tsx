@@ -18,8 +18,8 @@ import { Button } from "@/components/ui/button";
 import useUpdateItem from "@/hooks/query/items/useUpdateItem";
 import useAddItem from "@/hooks/query/items/useAddItem";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import BOMLookup from "./BOMLookup";
-import PlanLookup from "./PlanLookup";
+import BOMLookup from "../../components/BOMLookup";
+import PlanLookup from "../../components/PlanLookup";
 import {
   Select,
   SelectContent,
@@ -73,12 +73,12 @@ export default function ItemForm(props: FormProps) {
     try {
       const res =
         props.mode === "update"
-          ? await updateMutate({ code: props.data.code, model: "general", data: payload })
-          : await addMutate({ model: "general", data: payload });
+          ? await updateMutate({ code: props.data.code, model: "fak", data: payload })
+          : await addMutate({ model: "fak", data: payload });
 
       toast({
-        title: "Successfully saved plan",
-        description: `Plan with the code "${res.plan_code}" has been saved.`,
+        title: "Successfully saved item",
+        description: `Item with the code "${res.code}" has been saved.`,
         variant: "default",
       });
 
@@ -120,14 +120,14 @@ export default function ItemForm(props: FormProps) {
           });
         } else {
           toast({
-            title: "Failed saving plan",
+            title: "Failed saving item",
             description: `An error has occured, ${e.response?.data.message}`,
             variant: "destructive",
           });
         }
       } else {
         toast({
-          title: "Failed saving plan",
+          title: "Failed saving item",
           description: `An error has occured, ${(e as Error).message}`,
           variant: "destructive",
         });

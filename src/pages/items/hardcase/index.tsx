@@ -20,28 +20,28 @@ import type { GetResponse } from "@/types/response";
 import ItemForm from "./components/ItemForm";
 import apiClient from "@/api/apiClient";
 
-export const generalItemsQuery: FetchQueryOptions<BaseItem[]> = {
-  queryKey: ["items"],
+export const itemsQuery: FetchQueryOptions<BaseItem[]> = {
+  queryKey: ["items", "hardcase"],
   async queryFn() {
-    const res = await apiClient.get<GetResponse<BaseItem[]>>("generalItems");
+    const res = await apiClient.get<GetResponse<BaseItem[]>>("hardcaseItems");
     return res.data.data;
   },
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
   return (
-    queryClient.getQueryData<BaseItem[]>(generalItemsQuery.queryKey) ??
-    (await queryClient.fetchQuery(generalItemsQuery))
+    queryClient.getQueryData<BaseItem[]>(itemsQuery.queryKey) ??
+    (await queryClient.fetchQuery(itemsQuery))
   );
 };
 
-export default function GeneralItemPage() {
+export default function HardcaseItemPage() {
   const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [editId, setEditId] = useState<string | null>(null);
 
   const initialData = (useLoaderData() ?? []) as Awaited<ReturnType<ReturnType<typeof loader>>>;
-  const { data } = useQuery({ ...generalItemsQuery, initialData });
+  const { data } = useQuery({ ...itemsQuery, initialData });
 
   const meta: TableMeta<BaseItem> = {
     item: {
@@ -55,7 +55,7 @@ export default function GeneralItemPage() {
   return (
     <main className="space-y-4 p-8 pt-6">
       <div className="flex flex-wrap w-full justify-between gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">General Items</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Hardcase Items</h1>
         <Sheet open={addModalOpen} onOpenChange={setAddModalOpen}>
           <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
             <SheetHeader>

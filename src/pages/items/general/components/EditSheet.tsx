@@ -22,8 +22,8 @@ export default function EditSheet({
   return (
     <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
       <SheetHeader>
-        <SheetTitle>Edit plan</SheetTitle>
-        <SheetDescription>Update the details of an plan.</SheetDescription>
+        <SheetTitle>Edit item</SheetTitle>
+        <SheetDescription>Update the details of an item.</SheetDescription>
       </SheetHeader>
       <div className="mt-4 space-y-4">
         {isLoading ? (
