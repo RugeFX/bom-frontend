@@ -13,11 +13,13 @@ import {
   BikeIcon,
   CassetteTapeIcon,
   ChevronDownIcon,
+  HardHatIcon,
+  BookOpenTextIcon,
 } from "lucide-react";
 import { SheetContent } from "@/components/ui/sheet";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useNavActions, useNavItemsState } from "@/store";
 
 type SidebarItem = { name: string; Icon: LucideIcon } & (
   | { to?: undefined; subMenus: { name: string; Icon: LucideIcon; to: string }[] }
@@ -29,6 +31,11 @@ const sidebarItems: SidebarItem[] = [
     name: "Home",
     to: "/",
     Icon: Home,
+  },
+  {
+    name: "Reservations",
+    to: "/reservations",
+    Icon: BookOpenTextIcon,
   },
   {
     name: "Masters",
@@ -70,9 +77,14 @@ const sidebarItems: SidebarItem[] = [
         to: "/motor-items",
       },
       {
+        name: "Helmet",
+        Icon: HardHatIcon,
+        to: "/helmet-items",
+      },
+      {
         name: "Hardcase",
         Icon: CassetteTapeIcon,
-        to: "/motor-items",
+        to: "/hardcase-items",
       },
       {
         name: "FAK",
@@ -133,10 +145,16 @@ function GroupItem({
   Icon: LucideIcon;
   subMenus: { name: string; to: string; Icon: LucideIcon }[];
 }) {
-  const [open, setOpen] = useState(false);
+  const navItemsState = useNavItemsState();
+  const { setItemState } = useNavActions();
+
+  const open = navItemsState[name];
+  const onOpenChange = () => {
+    setItemState(name, !open);
+  };
 
   return (
-    <Collapsible key={name} open={open} onOpenChange={() => setOpen((prev) => !prev)}>
+    <Collapsible key={name} open={open} onOpenChange={onOpenChange}>
       <CollapsibleTrigger
         className={`flex w-full justify-start items-center gap-5 p-3 rounded-lg text-sm transition-colors hover:text-primary hover:bg-muted text-muted-foreground`}
       >

@@ -13,6 +13,7 @@ import { MaterialItem } from "@/types/material";
 import { columns } from "./data/columns";
 import EditSheet from "./components/EditSheet";
 import DetailSheet from "./components/DetailSheet";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const materialsQuery: FetchQueryOptions<MaterialItem[]> = {
   queryKey: ["materials"],
@@ -23,6 +24,7 @@ export const materialsQuery: FetchQueryOptions<MaterialItem[]> = {
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<MaterialItem[]>(materialsQuery.queryKey) ??
     (await queryClient.fetchQuery(materialsQuery))

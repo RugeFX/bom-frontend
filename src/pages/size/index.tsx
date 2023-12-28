@@ -19,6 +19,7 @@ import DataTable from "@/components/data-table/DataTable";
 import SizeForm from "./components/SizeForm";
 import { TableMeta } from "@tanstack/react-table";
 import { columns } from "./data/columns";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const sizesQuery: FetchQueryOptions<Size[]> = {
   queryKey: ["sizes"],
@@ -29,6 +30,7 @@ export const sizesQuery: FetchQueryOptions<Size[]> = {
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<Size[]>(sizesQuery.queryKey) ??
     (await queryClient.fetchQuery(sizesQuery))
@@ -59,8 +61,8 @@ export default function SizePage() {
         <Sheet open={addModalOpen} onOpenChange={setAddModalOpen}>
           <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
             <SheetHeader>
-              <SheetTitle>Add item</SheetTitle>
-              <SheetDescription>Create a new item.</SheetDescription>
+              <SheetTitle>Add size</SheetTitle>
+              <SheetDescription>Create a new size.</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-4">
               <SizeForm
@@ -73,7 +75,7 @@ export default function SizePage() {
           </SheetContent>
           <SheetTrigger asChild>
             <Button className="flex items-center gap-2">
-              <PlusIcon className="w-4 h-4" /> Add new item
+              <PlusIcon className="w-4 h-4" /> Add new size
             </Button>
           </SheetTrigger>
         </Sheet>

@@ -13,8 +13,10 @@ import { DataTableRowActions } from "./components/DataTableRowActions";
 import AddSheet from "./components/AddSheet";
 import EditSheet from "./components/EditSheet";
 import { bomsQuery } from "@/hooks/query/bom/useGetBoms";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<BOM[]>(bomsQuery.queryKey) ?? (await queryClient.fetchQuery(bomsQuery))
   );
@@ -58,7 +60,7 @@ export default function BomPage() {
       }),
       columnHelper.accessor("bom_code", {
         header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
-        cell: ({ row }) => <div className="max-w-[80px] truncate">{row.getValue("bom_code")}</div>,
+        cell: ({ row }) => <div className="font-medium truncate">{row.getValue("bom_code")}</div>,
       }),
       columnHelper.display({
         id: "actions",

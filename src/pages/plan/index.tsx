@@ -18,8 +18,10 @@ import type { TableMeta } from "@tanstack/react-table";
 import type { Plan } from "@/types/plan";
 import PlanForm from "./components/PlanForm";
 import useGetPlans, { plansQuery } from "@/hooks/query/plan/useGetPlans";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<Plan[]>(plansQuery.queryKey) ??
     (await queryClient.fetchQuery(plansQuery))

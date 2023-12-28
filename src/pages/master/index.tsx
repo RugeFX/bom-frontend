@@ -11,6 +11,7 @@ import { DataTableRowActions } from "./components/DataTableRowActions";
 import { Sheet } from "@/components/ui/sheet";
 import MasterDetailSheet from "./components/MasterDetailSheet";
 import DataTable from "@/components/data-table/DataTable";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const mastersQuery: FetchQueryOptions<Master[]> = {
   queryKey: ["masters"],
@@ -21,6 +22,7 @@ export const mastersQuery: FetchQueryOptions<Master[]> = {
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<Master[]>(mastersQuery.queryKey) ??
     (await queryClient.fetchQuery(mastersQuery))
