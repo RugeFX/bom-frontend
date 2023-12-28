@@ -8,14 +8,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import useGetItemDetails from "@/hooks/query/items/useGetItemDetails";
+import { ItemModelValues } from "@/lib/models";
 import { MapPinnedIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface TrackRecordDialogProps {
   code: string;
+  model: ItemModelValues;
 }
 
-export default function TrackRecordDialog({ code }: TrackRecordDialogProps) {
+export default function TrackRecordDialog({ code, model }: TrackRecordDialogProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -30,12 +33,26 @@ export default function TrackRecordDialog({ code }: TrackRecordDialogProps) {
           <DialogTitle>{code}'s Track Record</DialogTitle>
           <DialogDescription>See a reservation's detailed track record.</DialogDescription>
         </DialogHeader>
-        <TrackRecordContent code={code} />
+        <TrackRecordContent code={code} model={model} open={open} />
       </DialogContent>
     </Dialog>
   );
 }
 
-export function TrackRecordContent({ code }: { code: string }) {
+function TrackRecordContent({
+  code,
+  model,
+  open,
+}: {
+  code: string;
+  model: ItemModelValues;
+  open: boolean;
+}) {
+  const { data } = useGetItemDetails(code, model, { enabled: open });
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return <ScrollArea className="max-h-96">{code}</ScrollArea>;
 }

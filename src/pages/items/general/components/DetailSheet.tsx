@@ -4,6 +4,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useGetItemDetails from "@/hooks/query/items/useGetItemDetails";
 import { parseDateStringToLocale } from "@/lib/utils";
 import { type Schema, itemSchema } from "../data/schema";
+import TrackRecordDialog from "../../components/TrackRecordDialog";
+import { Button } from "@/components/ui/button";
+import { DownloadIcon, QrCodeIcon } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import QRCode from "react-qr-code";
 
 export default function DetailSheet({ id, open }: { id: string | null; open: boolean }) {
   const { data, isLoading, isError, isSuccess } = useGetItemDetails(id, "general", {
@@ -35,6 +48,32 @@ export default function DetailSheet({ id, open }: { id: string | null; open: boo
 function Details({ data }: { data: Schema }) {
   return (
     <>
+      <div className="flex justify-start">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" className="flex gap-2">
+              <QrCodeIcon className="w-5 h-5" />
+              <span className="sm:block hidden">Generate QR Code</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>QR Code</DialogTitle>
+              <DialogDescription>QR Code for item : {data.name}</DialogDescription>
+            </DialogHeader>
+            <div className="w-full grid place-items-center">
+              {/* TODO: Add batch QR and each qr to every details modal */}
+              <QRCode value={data.code} />
+            </div>
+            <DialogFooter>
+              <Button variant="default" className="w-full flex gap-2">
+                <DownloadIcon className="w-4 h-4" />
+                Download QR Code
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
       <div className="flex flex-col">
         <span className="text-muted-foreground text-sm">Code</span>
         <h3 className="font-semibold">{data.code}</h3>
@@ -73,6 +112,11 @@ function Details({ data }: { data: Schema }) {
       <div className="flex flex-col">
         <span className="text-muted-foreground text-sm">Updated At</span>
         <h3 className="font-semibold">{parseDateStringToLocale(data.updated_at)}</h3>
+      </div>
+      <Separator />
+      <div className="flex flex-col gap-2">
+        <span className="text-muted-foreground text-sm">Track Record</span>
+        <TrackRecordDialog code={data.bom_code} model="general" />
       </div>
       <Separator />
     </>

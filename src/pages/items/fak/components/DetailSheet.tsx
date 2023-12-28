@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useGetItemDetails from "@/hooks/query/items/useGetItemDetails";
 import { parseDateStringToLocale } from "@/lib/utils";
 import { type Schema, itemSchema } from "../data/schema";
+import TrackRecordDialog from "../../components/TrackRecordDialog";
 
 export default function DetailSheet({ id, open }: { id: string | null; open: boolean }) {
   const { data, isLoading, isError, isSuccess } = useGetItemDetails(id, "fak", {
@@ -73,6 +74,11 @@ function Details({ data }: { data: Schema }) {
       <div className="flex flex-col">
         <span className="text-muted-foreground text-sm">Updated At</span>
         <h3 className="font-semibold">{parseDateStringToLocale(data.updated_at)}</h3>
+      </div>
+      <Separator />
+      <div className="flex flex-col gap-2">
+        <span className="text-muted-foreground text-sm">Track Record</span>
+        <TrackRecordDialog code={data.code} model="fak" />
       </div>
       <Separator />
     </>

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "dev:host": "vite --host"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
@@ -42,6 +43,7 @@
     "react-day-picker": "^8.9.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.48.2",
+    "react-qr-code": "^2.0.12",
     "react-router-dom": "^6.18.0",
     "react-zxing": "^2.0.0",
     "recharts": "^2.9.3",
