@@ -1,5 +1,4 @@
 export type BaseItem = {
-  id: number;
   code: string;
   bom_code: string;
   plan_code: string;

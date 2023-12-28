@@ -13,8 +13,10 @@ import { DataTableRowActions } from "./components/DataTableRowActions";
 import AddSheet from "./components/AddSheet";
 import EditSheet from "./components/EditSheet";
 import { bomsQuery } from "@/hooks/query/bom/useGetBoms";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<BOM[]>(bomsQuery.queryKey) ?? (await queryClient.fetchQuery(bomsQuery))
   );

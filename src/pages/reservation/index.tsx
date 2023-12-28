@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
-import { useQuery, type QueryClient, FetchQueryOptions } from "@tanstack/react-query";
+import { FetchQueryOptions, useQuery, type QueryClient } from "@tanstack/react-query";
 import {
   Sheet,
   SheetContent,
@@ -12,19 +12,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import EditSheet from "./components/EditSheet";
-import ItemDataTable from "./components/data-table/ItemDataTable";
+import DataTable from "@/components/data-table/DataTable";
 import { columns } from "./data/columns";
 import type { TableMeta } from "@tanstack/react-table";
-import type { BaseItem } from "@/types/items";
-import type { GetResponse } from "@/types/response";
-import ItemForm from "./components/ItemForm";
-import apiClient from "@/api/apiClient";
+import type { Plan } from "@/types/plan";
 import loaderRequireAuth from "@/auth/loaderRequireAuth";
+import apiClient from "@/api/apiClient";
+import type { Reservation } from "@/types/reservation";
+import { GetResponse } from "@/types/response";
+import ReservationForm from "./components/ReservationForm";
 
-export const generalItemsQuery: FetchQueryOptions<BaseItem[]> = {
-  queryKey: ["items", "general"],
+export const reservationsQuery: FetchQueryOptions<Reservation[]> = {
+  queryKey: ["reservations"],
   async queryFn() {
-    const res = await apiClient.get<GetResponse<BaseItem[]>>("generalItems");
+    const res = await apiClient.get<GetResponse<Reservation[]>>("reservations");
+
     return res.data.data;
   },
 };
@@ -32,21 +34,25 @@ export const generalItemsQuery: FetchQueryOptions<BaseItem[]> = {
 export const loader = (queryClient: QueryClient) => async () => {
   await loaderRequireAuth();
   return (
-    queryClient.getQueryData<BaseItem[]>(generalItemsQuery.queryKey) ??
-    (await queryClient.fetchQuery(generalItemsQuery))
+    queryClient.getQueryData<Reservation[]>(reservationsQuery.queryKey) ??
+    (await queryClient.fetchQuery(reservationsQuery))
   );
 };
 
-export default function GeneralItemPage() {
+export default function ReservationPage() {
   const [addModalOpen, setAddModalOpen] = useState<boolean>(false);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
-  const [editId, setEditId] = useState<string | null>(null);
+  const [editId, setEditId] = useState<number | null>(null);
 
   const initialData = (useLoaderData() ?? []) as Awaited<ReturnType<ReturnType<typeof loader>>>;
-  const { data } = useQuery({ ...generalItemsQuery, initialData });
+  const { data } = useQuery({ ...reservationsQuery, initialData });
 
-  const meta: TableMeta<BaseItem> = {
-    item: {
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
+
+  const meta: TableMeta<Plan> = {
+    default: {
       onUpdateClick(id) {
         setEditModalOpen(true);
         setEditId(id);
@@ -57,15 +63,15 @@ export default function GeneralItemPage() {
   return (
     <main className="space-y-4 p-8 pt-6">
       <div className="flex flex-wrap w-full justify-between gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">General Items</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Reservations</h1>
         <Sheet open={addModalOpen} onOpenChange={setAddModalOpen}>
           <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
             <SheetHeader>
-              <SheetTitle>Add item</SheetTitle>
-              <SheetDescription>Create a new item.</SheetDescription>
+              <SheetTitle>Add reservation</SheetTitle>
+              <SheetDescription>Create a new reservation.</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-4">
-              <ItemForm
+              <ReservationForm
                 mode="add"
                 onSuccess={() => {
                   setAddModalOpen(false);
@@ -75,7 +81,7 @@ export default function GeneralItemPage() {
           </SheetContent>
           <SheetTrigger asChild>
             <Button className="flex items-center gap-2">
-              <PlusIcon className="w-4 h-4" /> Add new item
+              <PlusIcon className="w-4 h-4" /> New reservation
             </Button>
           </SheetTrigger>
         </Sheet>
@@ -84,7 +90,7 @@ export default function GeneralItemPage() {
         <Sheet open={editModalOpen} onOpenChange={setEditModalOpen}>
           <EditSheet id={editId} open={editModalOpen} onSuccess={() => setEditModalOpen(false)} />
         </Sheet>
-        <ItemDataTable data={data} columns={columns} meta={meta} />
+        <DataTable data={data} columns={columns} meta={meta} />
       </div>
     </main>
   );

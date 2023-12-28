@@ -19,6 +19,7 @@ import DataTable from "@/components/data-table/DataTable";
 import SizeForm from "./components/SizeForm";
 import { TableMeta } from "@tanstack/react-table";
 import { columns } from "./data/columns";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const sizesQuery: FetchQueryOptions<Size[]> = {
   queryKey: ["sizes"],
@@ -29,6 +30,7 @@ export const sizesQuery: FetchQueryOptions<Size[]> = {
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<Size[]>(sizesQuery.queryKey) ??
     (await queryClient.fetchQuery(sizesQuery))

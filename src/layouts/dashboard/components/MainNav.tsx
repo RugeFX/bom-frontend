@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { SheetTrigger } from "@/components/ui/sheet";
 import { ListIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+import UserNav from "./UserNav";
 
 interface MainNavProps extends React.HTMLAttributes<HTMLElement> {
   mobile: boolean;
@@ -22,10 +23,11 @@ export default function MainNav({ mobile, ...props }: MainNavProps) {
       <div className={"flex w-full justify-between items-center"}>
         <Link to="/" className="py-4 flex gap-2 justify-center">
           <Icons.logo className="w-8 h-8 text-primary" aria-label="Dashboard" />
-          <span className="text-xl font-bold hidden whitespace-nowrap lg:block">BOM Ruge</span>
+          <span className="text-xl font-bold hidden whitespace-nowrap lg:block">BOM Demo</span>
         </Link>
         <div className="flex w-full max-w-md justify-end items-center gap-2">
           <ThemeToggler />
+          <UserNav />
         </div>
       </div>
     </nav>

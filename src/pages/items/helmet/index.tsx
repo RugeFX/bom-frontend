@@ -19,6 +19,7 @@ import type { BaseItem } from "@/types/items";
 import type { GetResponse } from "@/types/response";
 import ItemForm from "./components/ItemForm";
 import apiClient from "@/api/apiClient";
+import loaderRequireAuth from "@/auth/loaderRequireAuth";
 
 export const itemsQuery: FetchQueryOptions<BaseItem[]> = {
   queryKey: ["items", "helmet"],
@@ -29,6 +30,7 @@ export const itemsQuery: FetchQueryOptions<BaseItem[]> = {
 };
 
 export const loader = (queryClient: QueryClient) => async () => {
+  await loaderRequireAuth();
   return (
     queryClient.getQueryData<BaseItem[]>(itemsQuery.queryKey) ??
     (await queryClient.fetchQuery(itemsQuery))

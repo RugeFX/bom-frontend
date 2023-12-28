@@ -8,14 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { itemSchema } from "../../data/schema";
+import { reservationSchema } from "../../data/schema";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import DeleteDialog from "@/components/dialog/DeleteDialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import DetailSheet from "../DetailSheet";
 import { useState } from "react";
-import useDeleteItem from "@/hooks/query/items/useDeleteItem";
+import useDeleteReservation from "@/hooks/query/reservation/useDeleteReservation";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -24,21 +24,19 @@ interface DataTableRowActionsProps<TData> {
 
 export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsProps<TData>) {
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
-  const data = itemSchema.omit({ general: true, hardcase_code: true }).safeParse(row.original);
+  const data = reservationSchema.pick({ id: true }).parse(row.original);
 
   const { toast } = useToast();
-  const { mutateAsync: deleteMutate } = useDeleteItem();
+  const { mutateAsync: deleteMutate } = useDeleteReservation();
 
   const onDelete = async () => {
     try {
-      if (!data.success) return;
-
-      const { code } = data.data;
-      await deleteMutate({ code, model: "motor" });
+      const { id } = data;
+      await deleteMutate({ id });
 
       toast({
-        title: "Successfully deleted item",
-        description: `Item with the code "${code}" has been deleted.`,
+        title: "Successfully deleted size",
+        description: `Size with the id "${id}" has been deleted.`,
         variant: "default",
       });
     } catch (e) {
@@ -55,7 +53,7 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
   return (
     <div className="flex gap-4 items-center justify-center">
       <Sheet open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DetailSheet id={data.success ? data.data.code : null} open={detailsOpen} />
+        <DetailSheet id={data.id} open={detailsOpen} />
         <SheetTrigger asChild>
           <Button variant="ghost" className="flex h-8 w-8 p-0 data-[state=open]:bg-muted">
             <EyeOpenIcon className="h-4 w-4 text-primary" />
@@ -73,13 +71,9 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
-            {data.success && (
-              <DropdownMenuItem
-                onClick={() => table.options.meta?.item?.onUpdateClick(data.data.code)}
-              >
-                Edit
-              </DropdownMenuItem>
-            )}
+            <DropdownMenuItem onClick={() => table.options.meta?.default?.onUpdateClick(data.id)}>
+              Edit
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <AlertDialogTrigger className="w-full">Delete</AlertDialogTrigger>
             </DropdownMenuItem>

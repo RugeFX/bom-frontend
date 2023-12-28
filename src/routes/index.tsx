@@ -1,9 +1,12 @@
-import { createBrowserRouter } from "react-router-dom";
+import { type RouteObject, createBrowserRouter, redirect } from "react-router-dom";
 import type { QueryClient } from "@tanstack/react-query";
 import NotFoundPage from "@/pages/NotFoundPage";
 import DashboardLayout from "@/layouts/dashboard";
 import HomePage from "@/pages/dashboard";
+import PrivateRoute from "./PrivateRoute";
+import ScannerPage from "@/pages/scanner";
 import MasterPage, { loader as masterLoader } from "@/pages/master";
+import ReservationPage, { loader as reservationLoader } from "@/pages/reservation";
 import BomPage, { loader as bomLoader } from "@/pages/bom";
 import MaterialPage, { loader as materialLoader } from "@/pages/material";
 import SizePage, { loader as sizeLoader } from "@/pages/size";
@@ -13,11 +16,14 @@ import FAKItemPage, { loader as fakItemLoader } from "@/pages/items/fak";
 import HelmetItemPage, { loader as helmetItemLoader } from "@/pages/items/helmet";
 import MotorItemPage, { loader as motorItemLoader } from "@/pages/items/motor";
 import HardcaseItemPage, { loader as hardcaseItemLoader } from "@/pages/items/hardcase";
-import ScannerPage from "@/pages/scanner";
+import LoginPage from "@/pages/login";
+import GuestRoute from "./GuestRoute";
 
-export const router = (queryClient: QueryClient) =>
-  createBrowserRouter([
+const privateRoutes = (queryClient: QueryClient): RouteObject => ({
+  element: <PrivateRoute />,
+  children: [
     {
+      path: "/",
       element: <DashboardLayout />,
       children: [
         {
@@ -75,6 +81,11 @@ export const router = (queryClient: QueryClient) =>
           loader: fakItemLoader(queryClient),
         },
         {
+          path: "/reservations",
+          element: <ReservationPage />,
+          loader: reservationLoader(queryClient),
+        },
+        {
           path: "/scan",
           element: <ScannerPage />,
         },
@@ -84,4 +95,24 @@ export const router = (queryClient: QueryClient) =>
       path: "*",
       element: <NotFoundPage />,
     },
-  ]);
+  ],
+});
+
+const publicRoutes: RouteObject = {
+  element: <GuestRoute />,
+  children: [
+    {
+      path: "/",
+      loader() {
+        return redirect("/login");
+      },
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+  ],
+};
+
+export const router = (queryClient: QueryClient) =>
+  createBrowserRouter([publicRoutes, privateRoutes(queryClient)]);
