@@ -104,7 +104,7 @@ export default function ItemForm(props: FormProps) {
               plan_code: res.plan_code,
               bom_code: res.bom_code,
               name: res.name,
-              information: res.information,
+              information: res.information ?? "",
               status: res.status as Schema["status"],
               hardcase_code: res.hardcase_code ?? "",
               general: res.general?.map((gen) => ({ general_code: gen.code })),

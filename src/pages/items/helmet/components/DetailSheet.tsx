@@ -57,7 +57,7 @@ function Details({ data }: { data: Schema }) {
       <Separator />
       <div className="flex flex-col">
         <span className="text-muted-foreground text-sm">Information</span>
-        <h3 className="font-semibold">{data.information}</h3>
+        <h3 className="font-semibold">{data.information ?? "-"}</h3>
       </div>
       <Separator />
       <div className="flex flex-col">

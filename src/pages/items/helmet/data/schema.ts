@@ -7,7 +7,7 @@ export const itemSchema = z.object({
   plan_code: z.string(),
   name: z.string(),
   status: z.enum(statuses),
-  information: z.string(),
+  information: z.string().nullish(),
   created_at: z.string(),
   updated_at: z.string(),
 });

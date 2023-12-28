@@ -45,7 +45,7 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
       console.error(e);
 
       toast({
-        title: "Failed deleting size",
+        title: "Failed deleting item",
         description: "An unexpected error has occured.",
         variant: "destructive",
       });

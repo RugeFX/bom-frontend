@@ -53,7 +53,7 @@ export default function ItemForm(props: FormProps) {
             plan_code: props.data.plan_code,
             bom_code: props.data.bom_code,
             name: props.data.name,
-            information: props.data.information,
+            information: props.data.information ?? "",
             status: props.data.status,
           }
         : {
