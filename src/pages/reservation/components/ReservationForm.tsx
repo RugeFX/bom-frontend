@@ -68,10 +68,10 @@ export default function ReservationForm(props: FormProps) {
             pickupPlan_code: "",
             returnPlan_code: "",
             information: "",
-            motor: [{ motor_code: "MOTR1" }],
-            fak: [{ fak_code: "FAK1" }],
+            motor: [],
+            fak: [],
             hardcase: [],
-            helmet: [{ helmet_code: "HELM1" }],
+            helmet: [],
           },
   });
 
