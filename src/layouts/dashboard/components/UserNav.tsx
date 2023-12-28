@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
+  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useLogout from "@/hooks/query/auth/useLogout";
 import { useUserData } from "@/store";
-import { UserIcon } from "lucide-react";
+// import { UserIcon } from "lucide-react";
 import { apiAsset } from "@/lib/utils";
 
 export default function UserNav() {
@@ -51,14 +51,14 @@ export default function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link to="#profile" className="flex justify-between">
               Profile <UserIcon className="w-5 h-5" />
             </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator /> */}
         <DropdownMenuItem asChild>
           <button
             className="w-full focus:bg-red-500 focus:text-background dark:focus:bg-red-900 dark:focus:text-foreground"
