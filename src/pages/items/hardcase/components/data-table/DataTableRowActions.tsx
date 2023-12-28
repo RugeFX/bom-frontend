@@ -24,7 +24,7 @@ interface DataTableRowActionsProps<TData> {
 
 export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsProps<TData>) {
   const [detailsOpen, setDetailsOpen] = useState<boolean>(false);
-  const data = itemSchema.safeParse(row.original);
+  const data = itemSchema.pick({ code: true }).safeParse(row.original);
 
   const { toast } = useToast();
   const { mutateAsync: deleteMutate } = useDeleteItem();
