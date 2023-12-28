@@ -74,7 +74,11 @@ export default function ItemForm(props: FormProps) {
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
     try {
-      const data = { ...payload, monorack_code: payload.monorack_code || undefined };
+      const data = {
+        ...payload,
+        monorack_code: payload.monorack_code || undefined,
+        information: payload.information || undefined,
+      };
 
       const res =
         props.mode === "update"
@@ -94,7 +98,7 @@ export default function ItemForm(props: FormProps) {
               plan_code: res.plan_code,
               bom_code: res.bom_code,
               name: res.name,
-              information: res.information,
+              information: res.information ?? "",
               status: res.status as Schema["status"],
               monorack_code: res.monorack_code ?? "",
             }

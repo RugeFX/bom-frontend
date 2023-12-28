@@ -1,3 +1,6 @@
+import { Plan } from "./plan";
+import { Reservation } from "./reservation";
+
 export type BaseItem = {
   code: string;
   bom_code: string;
@@ -7,6 +10,8 @@ export type BaseItem = {
   information?: string;
   created_at: string;
   updated_at: string;
+  plan?: Plan;
+  reservation?: Reservation[];
 };
 
 export interface HardcaseItem extends BaseItem {

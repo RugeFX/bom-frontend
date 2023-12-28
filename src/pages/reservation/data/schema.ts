@@ -25,13 +25,13 @@ export const formSchema = z.object({
   fak: z.array(
     z.object({
       fak_code: z.string(),
-      status: z.enum(["Complete", "Incomplete"]).optional(),
+      status: z.enum(["Complete", "Incomplete", "Lost"]).optional(),
     })
   ),
   motor: z.array(
     z.object({
       motor_code: z.string(),
-      status: z.enum(["Lost", "Scrab", "Ready For Rent"]).optional(),
+      status: z.enum(["Ready For Rent", "Out Of Service"]).optional(),
     })
   ),
   hardcase: z

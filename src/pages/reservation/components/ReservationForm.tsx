@@ -23,9 +23,16 @@ import { ItemScannerNew } from "./ItemScannerNew";
 import useAddReservation from "@/hooks/query/reservation/useAddReservation";
 import useUpdateReservation from "@/hooks/query/reservation/useUpdateReservation";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FormProps = { onSuccess: (id: number) => void } & (
   | {
@@ -61,72 +68,122 @@ export default function ReservationForm(props: FormProps) {
             pickupPlan_code: "",
             returnPlan_code: "",
             information: "",
-            motor: [],
-            fak: [],
+            motor: [{ motor_code: "MOTR1" }],
+            fak: [{ fak_code: "FAK1" }],
             hardcase: [],
-            helmet: [],
+            helmet: [{ helmet_code: "HELM1" }],
           },
   });
+
+  // Dev:
+  // {
+  //   reservation_code: "",
+  //   pickupPlan_code: "",
+  //   returnPlan_code: "",
+  //   information: "",
+  //   motor: [{ motor_code: "MOTR1" }],
+  //   fak: [{ fak_code: "FAK1" }],
+  //   hardcase: [],
+  //   helmet: [{ helmet_code: "HELM1" }],
+  // },
   const { isSubmitting, isDirty } = form.formState;
   const [type, setType] = useState<"pickup" | "return">(() => {
     if (props.mode === "update" && props.data.pickupPlan_code) return "return";
     return "pickup";
   });
 
+  useEffect(() => {
+    form.setValue("status", type === "pickup" ? "In Rental" : "Finished Rental");
+  }, [form, type]);
+
   const { mutateAsync: updateMutate } = useUpdateReservation();
   const { mutateAsync: addMutate } = useAddReservation();
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
+    let res_code = "";
     try {
-      const res =
-        props.mode === "update"
-          ? await updateMutate({
-              id: props.data.id,
-              data: {
-                ...payload,
-                returnPlan_code: payload.returnPlan_code || undefined,
-                information: payload.information || undefined,
-              },
-            })
-          : await addMutate({
-              data: {
-                ...payload,
-                returnPlan_code: payload.returnPlan_code || undefined,
-                information: payload.information || undefined,
-              },
+      if (props.mode === "update") {
+        if (!payload.returnPlan_code || payload.returnPlan_code === "") {
+          form.setError("returnPlan_code", {
+            type: "required",
+            message: "The return plan field is required!",
+          });
+          return;
+        }
+
+        if (
+          !payload.motor.every((m) => m.status !== undefined) ||
+          !payload.fak.every((m) => m.status !== undefined) ||
+          !payload.helmet.every((m) => m.status !== undefined)
+        ) {
+          form.setError("motor", { type: "required", message: "The status field is required!" });
+          form.setError("helmet", { type: "required", message: "The status field is required!" });
+          form.setError("fak", { type: "required", message: "The status field is required!" });
+          if (
+            payload.hardcase !== undefined &&
+            payload.hardcase.length > 0 &&
+            !payload.hardcase.every((m) => m.status !== undefined)
+          ) {
+            form.setError("hardcase", {
+              type: "required",
+              message: "The status field is required!",
             });
+          }
+          return;
+        }
+
+        const res = await updateMutate({
+          id: props.data.id,
+          data: {
+            ...payload,
+            returnPlan_code: payload.returnPlan_code || undefined,
+            information: payload.information || undefined,
+          },
+        });
+
+        form.reset({
+          reservation_code: res.reservation_code,
+          pickupPlan_code: res.pickupPlan_code,
+          returnPlan_code: res.returnPlan_code ?? "",
+          information: res.information ?? "",
+          status: res.status,
+          motor: res.motor_items.map((item) => ({ motor_code: item.code })),
+          fak: res.fak_items.map((item) => ({ fak_code: item.code })),
+          hardcase: res.hardcase_items.map((item) => ({ hardcase_code: item.code })),
+          helmet: res.helmet_items.map((item) => ({ helmet_code: item.code })),
+        });
+        props.onSuccess(res.id);
+
+        res_code = res.reservation_code;
+      } else {
+        const res = await addMutate({
+          data: {
+            ...payload,
+            returnPlan_code: payload.returnPlan_code || undefined,
+            information: payload.information || undefined,
+          },
+        });
+
+        form.reset({
+          reservation_code: "",
+          pickupPlan_code: "",
+          returnPlan_code: "",
+          information: "",
+          motor: [],
+          helmet: [],
+          fak: [],
+          hardcase: [],
+        });
+        props.onSuccess(res.id);
+
+        res_code = res.reservation_code;
+      }
 
       toast({
         title: "Successfully saved reservation",
-        description: `Reservation with the code "${res.reservation_code}" has been saved.`,
+        description: `Reservation with the code "${res_code}" has been saved.`,
         variant: "default",
       });
-
-      form.reset(
-        props.mode === "update"
-          ? {
-              reservation_code: res.reservation_code,
-              pickupPlan_code: res.pickupPlan_code,
-              returnPlan_code: res.returnPlan_code ?? "",
-              information: res.information ?? "",
-              status: res.status,
-              motor: res.motor_items.map((item) => ({ motor_code: item.code })),
-              fak: res.fak_items.map((item) => ({ fak_code: item.code })),
-              hardcase: res.hardcase_items.map((item) => ({ hardcase_code: item.code })),
-              helmet: res.helmet_items.map((item) => ({ helmet_code: item.code })),
-            }
-          : {
-              reservation_code: "",
-              pickupPlan_code: "",
-              returnPlan_code: "",
-              information: "",
-              motor: [],
-              helmet: [],
-              fak: [],
-              hardcase: [],
-            }
-      );
-      props.onSuccess(res.id);
     } catch (e) {
       console.error(e);
 
@@ -140,6 +197,7 @@ export default function ReservationForm(props: FormProps) {
           "helmet",
           "fak",
           "hardcase",
+          "status",
         ];
 
         if (e.response && e.response.status === 400) {
@@ -311,23 +369,49 @@ export default function ReservationForm(props: FormProps) {
                 <FormMessage />
                 {field.value.length > 0 ? (
                   <ul className="flex flex-col gap-2">
-                    {field.value.map(({ motor_code }) => (
+                    {field.value.map(({ motor_code, status }) => (
                       <li
                         key={motor_code}
                         className="border border-border flex flex-row sm:flex-row justify-between gap-2 rounded-md"
                       >
                         <span className="block px-5 py-2 truncate">{motor_code}</span>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="destructive"
-                          className="rounded-none"
-                          onClick={() =>
-                            field.onChange(field.value.filter((v) => v.motor_code !== motor_code))
-                          }
-                        >
-                          <MinusCircleIcon className="w-5 h-5" />
-                        </Button>
+                        <div className="flex">
+                          {type === "return" && (
+                            <Select
+                              value={status}
+                              onValueChange={(status) => {
+                                const values = field.value;
+                                const foundIndex = values.findIndex(
+                                  (v) => v.motor_code === motor_code
+                                );
+                                values[foundIndex] = {
+                                  motor_code,
+                                  status: status as FormValues["motor"][number]["status"],
+                                };
+                                field.onChange(values);
+                              }}
+                            >
+                              <SelectTrigger className="w-[100px] sm:w-[180px] rounded-none border-none bg-secondary transition-colors">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Ready For Rent">Ready For Rent</SelectItem>
+                                <SelectItem value="Out Of Service">Out Of Service</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="destructive"
+                            className="rounded-none"
+                            onClick={() =>
+                              field.onChange(field.value.filter((v) => v.motor_code !== motor_code))
+                            }
+                          >
+                            <MinusCircleIcon className="w-5 h-5" />
+                          </Button>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -364,23 +448,52 @@ export default function ReservationForm(props: FormProps) {
                 <FormMessage />
                 {field.value.length > 0 ? (
                   <ul className="flex flex-col gap-2">
-                    {field.value.map(({ helmet_code }) => (
+                    {field.value.map(({ helmet_code, status }) => (
                       <li
                         key={helmet_code}
                         className="border border-border flex flex-row sm:flex-row justify-between gap-2 rounded-md"
                       >
                         <span className="block px-5 py-2 truncate">{helmet_code}</span>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="destructive"
-                          className="rounded-none"
-                          onClick={() =>
-                            field.onChange(field.value.filter((v) => v.helmet_code !== helmet_code))
-                          }
-                        >
-                          <MinusCircleIcon className="w-5 h-5" />
-                        </Button>
+                        <div className="flex">
+                          {type === "return" && (
+                            <Select
+                              value={status}
+                              onValueChange={(status) => {
+                                const values = field.value;
+                                const foundIndex = values.findIndex(
+                                  (v) => v.helmet_code === helmet_code
+                                );
+                                values[foundIndex] = {
+                                  helmet_code,
+                                  status: status as FormValues["helmet"][number]["status"],
+                                };
+                                field.onChange(values);
+                              }}
+                            >
+                              <SelectTrigger className="w-[100px] sm:w-[180px] rounded-none border-none bg-secondary transition-colors">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Ready For Rent">Ready For Rent</SelectItem>
+                                <SelectItem value="Scrab">Scrab</SelectItem>
+                                <SelectItem value="Lost">Lost</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="destructive"
+                            className="rounded-none"
+                            onClick={() =>
+                              field.onChange(
+                                field.value.filter((v) => v.helmet_code !== helmet_code)
+                              )
+                            }
+                          >
+                            <MinusCircleIcon className="w-5 h-5" />
+                          </Button>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -415,23 +528,48 @@ export default function ReservationForm(props: FormProps) {
                 <FormMessage />
                 {field.value.length > 0 ? (
                   <ul className="flex flex-col gap-2">
-                    {field.value.map(({ fak_code }) => (
+                    {field.value.map(({ fak_code, status }) => (
                       <li
                         key={fak_code}
                         className="border border-border flex flex-row sm:flex-row justify-between gap-2 rounded-md"
                       >
                         <span className="block px-5 py-2 truncate">{fak_code}</span>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="destructive"
-                          className="rounded-none"
-                          onClick={() =>
-                            field.onChange(field.value.filter((v) => v.fak_code !== fak_code))
-                          }
-                        >
-                          <MinusCircleIcon className="w-5 h-5" />
-                        </Button>
+                        <div className="flex">
+                          {type === "return" && (
+                            <Select
+                              value={status}
+                              onValueChange={(status) => {
+                                const values = field.value;
+                                const foundIndex = values.findIndex((v) => v.fak_code === fak_code);
+                                values[foundIndex] = {
+                                  fak_code,
+                                  status: status as FormValues["fak"][number]["status"],
+                                };
+                                field.onChange(values);
+                              }}
+                            >
+                              <SelectTrigger className="w-[100px] sm:w-[180px] rounded-none border-none bg-secondary transition-colors">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Complete">Complete</SelectItem>
+                                <SelectItem value="Incomplete">Incomplete</SelectItem>
+                                <SelectItem value="Lost">Lost</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="destructive"
+                            className="rounded-none"
+                            onClick={() =>
+                              field.onChange(field.value.filter((v) => v.fak_code !== fak_code))
+                            }
+                          >
+                            <MinusCircleIcon className="w-5 h-5" />
+                          </Button>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -468,25 +606,54 @@ export default function ReservationForm(props: FormProps) {
                 <FormMessage />
                 {field.value && field.value.length > 0 ? (
                   <ul className="flex flex-col gap-2">
-                    {field.value.map(({ hardcase_code }) => (
+                    {field.value.map(({ hardcase_code, status }) => (
                       <li
                         key={hardcase_code}
                         className="border border-border flex flex-row sm:flex-row justify-between gap-2 rounded-md"
                       >
                         <span className="block px-5 py-2 truncate">{hardcase_code}</span>
-                        <Button
-                          type="button"
-                          size="icon"
-                          variant="destructive"
-                          className="rounded-none"
-                          onClick={() =>
-                            field.onChange(
-                              field.value?.filter((v) => v.hardcase_code !== hardcase_code) ?? []
-                            )
-                          }
-                        >
-                          <MinusCircleIcon className="w-5 h-5" />
-                        </Button>
+                        <div className="flex">
+                          {type === "return" && (
+                            <Select
+                              value={status}
+                              onValueChange={(status) => {
+                                const values = field.value;
+                                if (!values) return;
+
+                                const foundIndex = values.findIndex(
+                                  (v) => v.hardcase_code === hardcase_code
+                                );
+                                values[foundIndex] = {
+                                  hardcase_code,
+                                  status: status as "Lost" | "Scrab" | "Ready For Rent" | undefined,
+                                };
+                                field.onChange(values);
+                              }}
+                            >
+                              <SelectTrigger className="w-[100px] sm:w-[180px] rounded-none border-none bg-secondary transition-colors">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="Ready For Rent">Ready For Rent</SelectItem>
+                                <SelectItem value="Scrab">Scrab</SelectItem>
+                                <SelectItem value="Lost">Lost</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="destructive"
+                            className="rounded-none"
+                            onClick={() =>
+                              field.onChange(
+                                field.value?.filter((v) => v.hardcase_code !== hardcase_code) ?? []
+                              )
+                            }
+                          >
+                            <MinusCircleIcon className="w-5 h-5" />
+                          </Button>
+                        </div>
                       </li>
                     ))}
                   </ul>

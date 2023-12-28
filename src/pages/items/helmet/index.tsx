@@ -24,7 +24,9 @@ import loaderRequireAuth from "@/auth/loaderRequireAuth";
 export const itemsQuery: FetchQueryOptions<BaseItem[]> = {
   queryKey: ["items", "helmet"],
   async queryFn() {
-    const res = await apiClient.get<GetResponse<BaseItem[]>>("helmetItems");
+    const res = await apiClient.get<GetResponse<BaseItem[]>>("helmetItems", {
+      params: { relations: "plan" },
+    });
     return res.data.data;
   },
 };

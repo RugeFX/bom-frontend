@@ -60,7 +60,7 @@ export default function BomPage() {
       }),
       columnHelper.accessor("bom_code", {
         header: ({ column }) => <DataTableColumnHeader column={column} title="Code" />,
-        cell: ({ row }) => <div className="max-w-[80px] truncate">{row.getValue("bom_code")}</div>,
+        cell: ({ row }) => <div className="font-medium truncate">{row.getValue("bom_code")}</div>,
       }),
       columnHelper.display({
         id: "actions",

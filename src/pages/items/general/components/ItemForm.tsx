@@ -73,8 +73,15 @@ export default function ItemForm(props: FormProps) {
     try {
       const res =
         props.mode === "update"
-          ? await updateMutate({ code: props.data.code, model: "general", data: payload })
-          : await addMutate({ model: "general", data: payload });
+          ? await updateMutate({
+              code: props.data.code,
+              model: "general",
+              data: { ...payload, information: payload.information || undefined },
+            })
+          : await addMutate({
+              model: "general",
+              data: { ...payload, information: payload.information || undefined },
+            });
 
       toast({
         title: "Successfully saved item",
@@ -89,7 +96,7 @@ export default function ItemForm(props: FormProps) {
               plan_code: res.plan_code,
               bom_code: res.bom_code,
               name: res.name,
-              information: res.information,
+              information: res.information ?? "",
               status: res.status as Schema["status"],
             }
           : {

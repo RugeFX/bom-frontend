@@ -19,12 +19,22 @@ export const itemSchema = z.object({
         bom_code: z.string(),
         plan_code: z.string(),
         status: z.string(),
-        information: z.string(),
+        information: z.string().min(3).nullish().or(z.literal("")),
         created_at: z.string(),
         updated_at: z.string(),
       })
     )
     .min(1),
+  plan: z
+    .object({
+      id: z.number(),
+      plan_code: z.string(),
+      name: z.string(),
+      address: z.string(),
+      created_at: z.string(),
+      updated_at: z.string(),
+    })
+    .optional(),
 });
 
 export type Schema = z.infer<typeof itemSchema>;

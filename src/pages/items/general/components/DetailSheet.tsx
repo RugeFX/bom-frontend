@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useGetItemDetails from "@/hooks/query/items/useGetItemDetails";
 import { parseDateStringToLocale } from "@/lib/utils";
 import { type Schema, itemSchema } from "../data/schema";
-import TrackRecordDialog from "../../components/TrackRecordDialog";
+// import TrackRecordDialog from "../../components/TrackRecordDialog";
 import { Button } from "@/components/ui/button";
 import { DownloadIcon, QrCodeIcon } from "lucide-react";
 import {
@@ -46,6 +46,37 @@ export default function DetailSheet({ id, open }: { id: string | null; open: boo
 }
 
 function Details({ data }: { data: Schema }) {
+  const onQRDownload = () => {
+    const svg = document.getElementById("qr-code")!;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas")!;
+    const ctx = canvas.getContext("2d")!;
+    const img = new Image();
+    img.onload = () => {
+      canvas.width = img.width;
+      canvas.height = img.height + 100;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+
+      ctx.font = "30px Arial";
+      ctx.fillStyle = "white";
+      const text = `${data.code}`;
+      const textWidth = ctx.measureText(text).width;
+
+      const textX = (canvas.width - textWidth) / 2;
+      const textY = canvas.height - 20;
+
+      ctx.fillText(text, textX, textY);
+
+      const pngFile = canvas.toDataURL("image/png");
+      const downloadLink = document.createElement("a")!;
+      downloadLink.download = `QRItem-${data.code}`;
+      downloadLink.href = `${pngFile}`;
+      downloadLink.click();
+    };
+    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
+  };
+
   return (
     <>
       <div className="flex justify-start">
@@ -62,11 +93,10 @@ function Details({ data }: { data: Schema }) {
               <DialogDescription>QR Code for item : {data.name}</DialogDescription>
             </DialogHeader>
             <div className="w-full grid place-items-center">
-              {/* TODO: Add batch QR and each qr to every details modal */}
-              <QRCode value={data.code} />
+              <QRCode id="qr-code" value={data.code} />
             </div>
             <DialogFooter>
-              <Button variant="default" className="w-full flex gap-2">
+              <Button variant="default" className="w-full flex gap-2" onClick={onQRDownload}>
                 <DownloadIcon className="w-4 h-4" />
                 Download QR Code
               </Button>
@@ -80,8 +110,9 @@ function Details({ data }: { data: Schema }) {
       </div>
       <Separator />
       <div className="flex flex-col">
-        <span className="text-muted-foreground text-sm">Plan Code</span>
-        <h3 className="font-semibold">{data.plan_code}</h3>
+        <span className="text-muted-foreground text-sm">Plan</span>
+        <h3 className="font-semibold">{data.plan?.name ?? "-"}</h3>
+        <h3 className="text-gray-400">{data.plan?.address ?? "-"}</h3>
       </div>
       <Separator />
       <div className="flex flex-col">
@@ -96,7 +127,7 @@ function Details({ data }: { data: Schema }) {
       <Separator />
       <div className="flex flex-col">
         <span className="text-muted-foreground text-sm">Information</span>
-        <h3 className="font-semibold">{data.information}</h3>
+        <h3 className="font-semibold">{data.information ?? "-"}</h3>
       </div>
       <Separator />
       <div className="flex flex-col">
@@ -114,11 +145,11 @@ function Details({ data }: { data: Schema }) {
         <h3 className="font-semibold">{parseDateStringToLocale(data.updated_at)}</h3>
       </div>
       <Separator />
-      <div className="flex flex-col gap-2">
+      {/* <div className="flex flex-col gap-2">
         <span className="text-muted-foreground text-sm">Track Record</span>
         <TrackRecordDialog code={data.bom_code} model="general" />
       </div>
-      <Separator />
+      <Separator /> */}
     </>
   );
 }

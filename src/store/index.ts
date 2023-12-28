@@ -19,6 +19,7 @@ export const useStore = create<AuthSlice & ThemeSlice & NavSlice>()(
           id: state.userData?.id,
           username: state.userData?.username,
           staff_code: state.userData?.staff_code,
+          staff: { name: state.userData?.staff?.name },
           role_code: state.userData?.staff?.role_code,
         },
         theme: state.theme,

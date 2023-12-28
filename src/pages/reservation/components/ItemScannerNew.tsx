@@ -37,6 +37,7 @@ export function ItemScannerNew({
     },
     timeBetweenDecodingAttempts: 3000,
     paused: result !== null,
+    constraints: { video: { facingMode: "environment" } },
   });
 
   return (

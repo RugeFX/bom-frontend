@@ -10,6 +10,16 @@ export const itemSchema = z.object({
   information: z.string().nullish().or(z.literal("")),
   created_at: z.string(),
   updated_at: z.string(),
+  plan: z
+    .object({
+      id: z.number(),
+      plan_code: z.string(),
+      name: z.string(),
+      address: z.string(),
+      created_at: z.string(),
+      updated_at: z.string(),
+    })
+    .optional(),
 });
 
 export type Schema = z.infer<typeof itemSchema>;
