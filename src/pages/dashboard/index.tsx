@@ -6,6 +6,7 @@ import apiClient from "@/api/apiClient";
 import { Skeleton } from "@/components/ui/skeleton";
 import PieChart from "./components/PieChart";
 import LineChart from "./components/LineChart";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function HomePage() {
   const { data, isLoading } = useQuery({
@@ -34,105 +35,126 @@ export default function HomePage() {
         <>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
-              {data.Fak.map((h:any)=>(
+              {data.Fak.map((h: any) => (
                 <>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Fak</CardTitle>
-              </CardHeader>
-              <CardContent>
-                
-                <div className="text-2xl font-bold">{h.Total} PCS</div>
-                <p className="text-xs text-muted-foreground">Today</p>
-              </CardContent>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total Fak</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{h.Total} PCS</div>
+                    <p className="text-xs text-muted-foreground">Today</p>
+                  </CardContent>
                 </>
               ))}
             </Card>
             <Card>
-              {data.AllHardcase.map((h:any)=>(
+              {data.AllHardcase.map((h: any) => (
                 <>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total {h.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-              <div className="text-2xl font-bold">{h.Total} PCS</div>
-                <p className="text-xs text-muted-foreground">Today</p>
-              </CardContent>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total {h.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{h.Total} PCS</div>
+                    <p className="text-xs text-muted-foreground">Today</p>
+                  </CardContent>
                 </>
               ))}
             </Card>
             <Card>
-              {data.AllHelmet.map((h:any)=>(
+              {data.AllHelmet.map((h: any) => (
                 <>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total {h.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-              <div className="text-2xl font-bold">{h.Total} PCS</div>
-                <p className="text-xs text-muted-foreground">Today</p>
-              </CardContent>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total {h.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{h.Total} PCS</div>
+                    <p className="text-xs text-muted-foreground">Today</p>
+                  </CardContent>
                 </>
               ))}
             </Card>
             <Card>
-              {data.AllMotor.map((h:any)=>(
+              {data.AllMotor.map((h: any) => (
                 <>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total {h.name}</CardTitle>
-              </CardHeader>
-              <CardContent>
-              <div className="text-2xl font-bold">{h.Total} PCS</div>
-                <p className="text-xs text-muted-foreground">Today</p>
-              </CardContent>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Total {h.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{h.Total} PCS</div>
+                    <p className="text-xs text-muted-foreground">Today</p>
+                  </CardContent>
                 </>
               ))}
             </Card>
           </div>
-            <div className="flex flex-col xl:flex-row h-max gap-2">
-              <Card className="w-full">
-                <CardHeader>
-                  <CardTitle>First Aid Kit</CardTitle>
-                  <CardDescription>Chart of all FAKs</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[200px]">
-                    <PieChart data={data} flag={1} />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="w-full">
-                <CardHeader>
-                  <CardTitle>All Hardcase</CardTitle>
-                  <CardDescription>Chart of all Hardcases</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[200px]">
-                    <PieChart data={data} flag={3} />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="w-full">
-                <CardHeader>
-                  <CardTitle>All Helmet</CardTitle>
-                  <CardDescription>Chart of all Helmets</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[200px]">
-                    <PieChart data={data} flag={4} />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="w-full">
+          <div className="flex flex-col xl:flex-row h-max gap-2">
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>First Aid Kit</CardTitle>
+                <CardDescription>Chart of all FAKs</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px]">
+                  <PieChart data={data} flag={1} />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>All Hardcase</CardTitle>
+                <CardDescription>Chart of all Hardcases</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px]">
+                  <PieChart data={data} flag={3} />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>All Helmet</CardTitle>
+                <CardDescription>Chart of all Helmets</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px]">
+                  <PieChart data={data} flag={4} />
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="w-full">
+              <CardHeader>
+                <CardTitle>All Motor</CardTitle>
+                <CardDescription>Chart of all motors</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[200px]">
+                  <PieChart data={data} flag={2} />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <Tabs defaultValue="motor" className="w-full">
+            <TabsList>
+              <TabsTrigger value="motor">Motor</TabsTrigger>
+              <TabsTrigger value="other">Other</TabsTrigger>
+            </TabsList>
+            <TabsContent value="motor">
+              <div className="w-full grid gap-4 lg:grid-cols-2">
+                <Card className="md:col-span-2">
                   <CardHeader>
-                    <CardTitle>All Motor</CardTitle>
-                    <CardDescription>Chart of all motors</CardDescription>
+                    <CardTitle>Motor</CardTitle>
+                    <CardDescription>Chart of motors and its statuses</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-[200px]">
-                      <PieChart data={data} flag={2} />
+                    <div className="h-[350px]">
+                      <BarChart data={data.Motor} />
                     </div>
                   </CardContent>
-              </Card>
-            </div>
+                </Card>
+              </div>
+            </TabsContent>
+            <TabsContent value="other">Change your password here.</TabsContent>
+          </Tabs>
           <div className="grid gap-4 lg:grid-cols-2">
             <Card className="md:col-span-2">
               <CardHeader>
@@ -141,7 +163,7 @@ export default function HomePage() {
               </CardHeader>
               <CardContent>
                 <div className="h-[350px]">
-                  <BarChart data={data.Motor}/>
+                  <BarChart data={data.Motor} />
                 </div>
               </CardContent>
             </Card>
@@ -156,19 +178,19 @@ export default function HomePage() {
                 </div>
               </CardContent>
             </Card>
-            {data.Plan.map((p:any)=>(
+            {data.Plan.map((p: any) => (
               <>
-              <Card className="">
-                <CardHeader>
-                  <CardTitle>{p.name}</CardTitle>
-                  <CardDescription>Chart of {p.name} and its statuses</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[350px]">
-                    <BarChart data={p.Motor}/>
-                  </div>
-                </CardContent>
-              </Card>
+                <Card className="">
+                  <CardHeader>
+                    <CardTitle>{p.name}</CardTitle>
+                    <CardDescription>Chart of {p.name} and its statuses</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-[350px]">
+                      <BarChart data={p.Motor} />
+                    </div>
+                  </CardContent>
+                </Card>
               </>
             ))}
           </div>
