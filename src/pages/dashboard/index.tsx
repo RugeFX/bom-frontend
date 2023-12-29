@@ -157,17 +157,15 @@ export default function HomePage() {
                 </CardContent>
               </Card>
               <Card className="w-full">
-                <CardTitle>
-                  <CardHeader>
-                    <CardTitle>All Motor</CardTitle>
-                    <CardDescription>Chart of all motors</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-[200px]">
-                      <PieChart data={data} flag={2} />
-                    </div>
-                  </CardContent>
-                </CardTitle>
+                <CardHeader>
+                  <CardTitle>All Motor</CardTitle>
+                  <CardDescription>Chart of all motors</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-[200px]">
+                    <PieChart data={data} flag={2} />
+                  </div>
+                </CardContent>
               </Card>
             </div>
           </div>

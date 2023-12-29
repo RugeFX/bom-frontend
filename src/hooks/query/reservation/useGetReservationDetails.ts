@@ -27,7 +27,6 @@ export default function useGetReservationDetails(
           relations: relations.join(","),
         },
       });
-      console.log(res.data.data);
       return res.data;
     },
     ...options,
