@@ -7,7 +7,7 @@ export default function PieChart({ data, flag }: { data: any; flag: number }) {
     if (!data) return null;
 
     if (flag === 1) {
-      return data.Fak.map((d: any) => ({
+      return data.AllFakData.map((d: any) => ({
         ...d,
         color: "#82ca9d",
         data: [
