@@ -35,6 +35,19 @@ export const itemSchema = z.object({
       updated_at: z.string(),
     })
     .optional(),
+  hardcase: z
+    .object({
+      code: z.string(),
+      monorack_code: z.string().nullish(),
+      name: z.string(),
+      bom_code: z.string(),
+      plan_code: z.string(),
+      status: z.string(),
+      information: z.string().nullish(),
+      created_at: z.string(),
+      updated_at: z.string(),
+    })
+    .optional(),
 });
 
 export type Schema = z.infer<typeof itemSchema>;

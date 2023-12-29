@@ -116,9 +116,16 @@ function Details({ data }: { data: Schema }) {
       </div>
       <Separator />
       <div className="flex flex-col">
-        <span className="text-muted-foreground text-sm">Hardcase code</span>
-        {data.hardcase_code ? (
-          <h3 className="font-semibold">{data.hardcase_code}</h3>
+        <span className="text-muted-foreground text-sm">Hardcase</span>
+        {data.hardcase_code && data.hardcase ? (
+          <div className="mt-1 px-5 py-3 rounded-md border border-border">
+            <span className="text-muted-foreground text-sm">Code</span>
+            <h3 className="font-semibold">{data.hardcase_code}</h3>
+            <span className="text-muted-foreground text-sm">Name</span>
+            <h3 className="font-semibold">{data.hardcase.name}</h3>
+            <span className="text-muted-foreground text-sm">Monorack Code</span>
+            <h3 className="font-semibold">{data.hardcase.monorack_code || "None"}</h3>
+          </div>
         ) : (
           <h3 className="text-muted-foreground">None</h3>
         )}
@@ -166,7 +173,7 @@ function GeneralsList({
               <HoverCard openDelay={300}>
                 <HoverCardTrigger asChild>
                   <div
-                    // TODO: Profile page
+                    // TODO: Query params detail page
                     // to={`/materials?details=${item.item_code}`}
                     className={cn(buttonVariants({ variant: "outline" }), "justify-start")}
                   >
