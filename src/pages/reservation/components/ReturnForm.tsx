@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Loader2Icon, MinusCircleIcon, PlusCircleIcon, TableIcon } from "lucide-react";
 import { isAxiosError } from "axios";
 import { z } from "zod";
-import { pickupSchema } from "../data/schema";
+import { Schema, reservationSchema, returnSchema } from "../data/schema";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Form,
@@ -19,56 +19,71 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import PlanLookup from "./PlanLookup";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { ItemScannerNew } from "./ItemScannerNew";
-import useAddReservation from "@/hooks/query/reservation/useAddReservation";
 import { Textarea } from "@/components/ui/textarea";
+import useUpdateReservation from "@/hooks/query/reservation/useUpdateReservation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 
-type FormProps = { onSuccess: (id: number) => void };
+type FormProps = { data: Schema; onSuccess: (id: number) => void };
 
-type FormValues = z.infer<typeof pickupSchema>;
+type FormValues = z.infer<typeof returnSchema>;
 
-/*
-  Field Values for dev:
+const defaultValues = (data: Schema): FormValues => ({
+  reservation_code: data.reservation_code,
+  pickupPlan_code: data.pickupPlan_code,
+  returnPlan_code: data.returnPlan_code ?? "",
+  information: data.information ?? "",
+  motor: data.motor_items.map(({ code }) => ({ motor_code: code, status: "Ready For Rent" })),
+  fak: data.fak_items.map(({ code }) => ({ fak_code: code, status: "Complete" })),
+  hardcase: (data.hardcase_items ?? []).map(({ code }) => ({
+    hardcase_code: code,
+    status: "Ready For Rent",
+  })),
+  helmet: data.helmet_items.map(({ code }) => ({ helmet_code: code, status: "Ready For Rent" })),
+  status: "Finished Rental",
+});
 
-  motor: [{ motor_code: "MOTR1" }],
-  fak: [{ fak_code: "FAK1" }],
-  helmet: [{ helmet_code: "HELM1" }],
-*/
-
-const defaultValues: FormValues = {
-  reservation_code: "",
-  pickupPlan_code: "",
-  information: "",
-  motor: [],
-  fak: [],
-  helmet: [],
-  hardcase: [],
-  status: "In Rental",
-};
-
-export default function PickupForm(props: FormProps) {
+export default function ReturnForm({ data, onSuccess }: FormProps) {
   const { toast } = useToast();
   const form = useForm<FormValues>({
-    resolver: zodResolver(pickupSchema),
-    defaultValues,
+    resolver: zodResolver(returnSchema),
+    defaultValues: defaultValues(data),
   });
 
   const { isSubmitting, isDirty } = form.formState;
 
-  const { mutateAsync: addMutate } = useAddReservation();
+  const { mutateAsync: updateMutate } = useUpdateReservation();
 
   const onSubmit: SubmitHandler<FormValues> = async (payload) => {
     try {
-      const res = await addMutate({
+      const res = await updateMutate({
+        id: data.id,
         data: {
           ...payload,
           information: payload.information || undefined,
         },
       });
 
-      form.reset(defaultValues);
-      props.onSuccess(res.id);
+      const parsedData = reservationSchema.safeParse(res);
+
+      if (!parsedData.success) {
+        toast({
+          title: "Edit response parse error!",
+          description: parsedData.error.errors.join(","),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      form.reset(defaultValues(parsedData.data));
+      onSuccess(res.id);
     } catch (e) {
       console.error(e);
 
@@ -118,12 +133,12 @@ export default function PickupForm(props: FormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-stretch gap-4">
         <div className="grid gap-2">
           <Label>Type</Label>
-          <Tabs defaultValue="pickup" className="mt-2 w-full">
+          <Tabs defaultValue="return" className="mt-2 w-full">
             <TabsList className="w-full flex">
-              <TabsTrigger className="flex-1" value="pickup">
+              <TabsTrigger disabled className="flex-1" value="pickup">
                 Pickup
               </TabsTrigger>
-              <TabsTrigger className="flex-1" disabled value="return">
+              <TabsTrigger className="flex-1" value="return">
                 Return
               </TabsTrigger>
             </TabsList>
@@ -143,10 +158,10 @@ export default function PickupForm(props: FormProps) {
           />
           <FormField
             control={form.control}
-            name="pickupPlan_code"
+            name="returnPlan_code"
             render={({ field: { value, onChange, ...rest } }) => (
               <FormItem>
-                <FormLabel>Pickup Plan</FormLabel>
+                <FormLabel>Return Plan</FormLabel>
                 <Dialog>
                   <PlanLookup
                     value={value}
@@ -191,12 +206,27 @@ export default function PickupForm(props: FormProps) {
             render={({ field }) => (
               <QRFormItem
                 label="Motor"
-                values={field.value.map((item) => item.motor_code)}
+                statuses={["Ready For Rent", "Out Of Service"] as const}
+                values={(field.value ?? []).map(({ motor_code, status }) => ({
+                  code: motor_code,
+                  status,
+                }))}
+                onChangeStatus={(code, status) => {
+                  const values = field.value;
+                  if (!values) return;
+
+                  const foundIndex = values.findIndex((v) => v.motor_code === code);
+                  values[foundIndex] = {
+                    motor_code: code,
+                    status,
+                  };
+                  field.onChange(values);
+                }}
                 onSubmitResult={(result) =>
-                  field.onChange([...field.value, { motor_code: result }])
+                  field.onChange([...(field.value ?? []), { motor_code: result }])
                 }
                 onRemoveItem={(code) => {
-                  field.onChange(field.value.filter((item) => item.motor_code !== code));
+                  field.onChange((field.value ?? []).filter((item) => item.motor_code !== code));
                 }}
               />
             )}
@@ -207,12 +237,27 @@ export default function PickupForm(props: FormProps) {
             render={({ field }) => (
               <QRFormItem
                 label="Helmet"
-                values={field.value.map((item) => item.helmet_code)}
+                statuses={["Lost", "Scrab", "Ready For Rent"] as const}
+                values={(field.value ?? []).map(({ helmet_code, status }) => ({
+                  code: helmet_code,
+                  status,
+                }))}
+                onChangeStatus={(code, status) => {
+                  const values = field.value;
+                  if (!values) return;
+
+                  const foundIndex = values.findIndex((v) => v.helmet_code === code);
+                  values[foundIndex] = {
+                    helmet_code: code,
+                    status,
+                  };
+                  field.onChange(values);
+                }}
                 onSubmitResult={(result) =>
-                  field.onChange([...field.value, { helmet_code: result }])
+                  field.onChange([...(field.value ?? []), { helmet_code: result }])
                 }
                 onRemoveItem={(code) => {
-                  field.onChange(field.value.filter((item) => item.helmet_code !== code));
+                  field.onChange((field.value ?? []).filter((item) => item.helmet_code !== code));
                 }}
               />
             )}
@@ -223,10 +268,27 @@ export default function PickupForm(props: FormProps) {
             render={({ field }) => (
               <QRFormItem
                 label="FAK"
-                values={field.value.map((item) => item.fak_code)}
-                onSubmitResult={(result) => field.onChange([...field.value, { fak_code: result }])}
+                statuses={["Complete", "Incomplete", "Lost"] as const}
+                values={(field.value ?? []).map(({ fak_code, status }) => ({
+                  code: fak_code,
+                  status,
+                }))}
+                onChangeStatus={(code, status) => {
+                  const values = field.value;
+                  if (!values) return;
+
+                  const foundIndex = values.findIndex((v) => v.fak_code === code);
+                  values[foundIndex] = {
+                    fak_code: code,
+                    status,
+                  };
+                  field.onChange(values);
+                }}
+                onSubmitResult={(result) =>
+                  field.onChange([...(field.value ?? []), { fak_code: result }])
+                }
                 onRemoveItem={(code) => {
-                  field.onChange(field.value.filter((item) => item.fak_code !== code));
+                  field.onChange((field.value ?? []).filter((item) => item.fak_code !== code));
                 }}
               />
             )}
@@ -237,7 +299,22 @@ export default function PickupForm(props: FormProps) {
             render={({ field }) => (
               <QRFormItem
                 label="Hardcase"
-                values={(field.value ?? []).map((item) => item.hardcase_code)}
+                statuses={["Ready For Rent", "Scrab", "Lost"] as const}
+                values={(field.value ?? []).map(({ hardcase_code, status }) => ({
+                  code: hardcase_code,
+                  status,
+                }))}
+                onChangeStatus={(code, status) => {
+                  const values = field.value;
+                  if (!values) return;
+
+                  const foundIndex = values.findIndex((v) => v.hardcase_code === code);
+                  values[foundIndex] = {
+                    hardcase_code: code,
+                    status,
+                  };
+                  field.onChange(values);
+                }}
                 onSubmitResult={(result) =>
                   field.onChange([...(field.value ?? []), { hardcase_code: result }])
                 }
@@ -257,14 +334,23 @@ export default function PickupForm(props: FormProps) {
   );
 }
 
-interface QRFormItemProps {
+interface QRFormItemProps<T extends readonly string[]> {
   label: string;
-  values: string[];
+  values: { code: string; status: T[number] }[];
+  statuses: T;
+  onChangeStatus: (code: string, status: T[number]) => void;
   onSubmitResult: (result: string) => void;
   onRemoveItem: (code: string) => void;
 }
 
-function QRFormItem({ label, values, onSubmitResult, onRemoveItem }: QRFormItemProps) {
+function QRFormItem<T extends readonly string[]>({
+  label,
+  values,
+  statuses,
+  onChangeStatus,
+  onSubmitResult,
+  onRemoveItem,
+}: QRFormItemProps<T>) {
   return (
     <FormItem>
       <FormLabel>{label}s</FormLabel>
@@ -279,19 +365,31 @@ function QRFormItem({ label, values, onSubmitResult, onRemoveItem }: QRFormItemP
           </DrawerTrigger>
         </FormControl>
         <DrawerContent>
-          <ItemScannerNew values={values} onSubmit={onSubmitResult} />
+          <ItemScannerNew values={values.map(({ code }) => code)} onSubmit={onSubmitResult} />
         </DrawerContent>
       </Drawer>
       <FormMessage />
       {values.length > 0 ? (
         <ul className="flex flex-col gap-2">
-          {values.map((code) => (
+          {values.map(({ code, status }) => (
             <li
               key={code}
               className="border border-border flex flex-row sm:flex-row justify-between gap-2 rounded-md"
             >
               <span className="block px-5 py-2 truncate">{code}</span>
               <div className="flex">
+                <Select value={status} onValueChange={(s) => onChangeStatus(code, s)}>
+                  <SelectTrigger className="w-[100px] sm:w-[180px] rounded-none border-none bg-secondary transition-colors">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {statuses.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Button
                   type="button"
                   size="icon"

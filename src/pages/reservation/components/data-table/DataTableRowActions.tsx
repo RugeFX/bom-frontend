@@ -71,9 +71,11 @@ export function DataTableRowActions<TData>({ row, table }: DataTableRowActionsPr
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-[160px]">
-            <DropdownMenuItem onClick={() => table.options.meta?.default?.onUpdateClick(data.id)}>
-              Edit
-            </DropdownMenuItem>
+            {row.getValue("status") === "In Rental" && (
+              <DropdownMenuItem onClick={() => table.options.meta?.default?.onUpdateClick(data.id)}>
+                Edit
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem asChild>
               <AlertDialogTrigger className="w-full">Delete</AlertDialogTrigger>
             </DropdownMenuItem>
