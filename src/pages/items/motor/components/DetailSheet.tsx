@@ -93,7 +93,7 @@ function Details({ data }: { data: Schema }) {
               <DialogTitle>QR Code</DialogTitle>
               <DialogDescription>QR Code for item : {data.name}</DialogDescription>
             </DialogHeader>
-            <div className="w-full grid place-items-center">
+            <div className="w-full p-5 bg-white rounded-md grid place-items-center">
               <QRCode id="qr-code" value={data.code} />
             </div>
             <DialogFooter>
