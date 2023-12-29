@@ -26,13 +26,16 @@ export function ItemScannerNew({
       console.log(values);
       if (values.includes(res.getText())) {
         toast({
-          title: "Scanned Item is already in list!",
-          description: `QR Result : ${res.getText()}`,
+          title: "Scanned Item is already in the list!",
+          description: `QR Result: ${res.getText()}`,
           variant: "destructive",
         });
       } else {
         setResult(res.getText());
-        toast({ title: "Successfully scanned Item!", description: `QR Result : ${res}` });
+        toast({
+          title: "Successfully scanned Item!",
+          description: `QR Result: ${res}`,
+        });
       }
     },
     timeBetweenDecodingAttempts: 3000,

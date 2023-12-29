@@ -3,7 +3,7 @@ import { useStore } from "@/store";
 import axios, { AxiosError } from "axios";
 
 const apiClient = axios.create({
-  baseURL: `${import.meta.env.VITE_BASE_API_URL ?? "http://localhost:8000"}/api`,
+  baseURL: `${import.meta.env.VITE_BASE_API_URL ?? "http://172.20.10.2:8000"}/api`,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

@@ -17,13 +17,17 @@ import { Button } from "@/components/ui/button";
 import { DownloadIcon, QrCodeIcon } from "lucide-react";
 import QRCode from "react-qr-code";
 import TrackRecordDialog from "../../components/TrackRecordDialog";
+import { useEffect } from "react";
 
 export default function DetailSheet({ id, open }: { id: string | null; open: boolean }) {
   const { data, isLoading, isError, isSuccess } = useGetItemDetails(id, "hardcase", {
     enabled: open && id !== null,
   });
   const parsedData = itemSchema.safeParse(data?.data);
-
+  console.log(parsedData);
+  useEffect(()=>{
+      console.error(parsedData)
+  },[parsedData])
   return (
     <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
       <SheetHeader>
