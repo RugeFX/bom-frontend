@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { DownloadIcon, QrCodeIcon } from "lucide-react";
 import QRCode from "react-qr-code";
+import { onQRDownload } from "../../utils";
 
 export default function DetailSheet({ id, open }: { id: string | null; open: boolean }) {
   const { data, isLoading, isError, isSuccess } = useGetItemDetails(id, "motor", {
@@ -47,37 +48,6 @@ export default function DetailSheet({ id, open }: { id: string | null; open: boo
 }
 
 function Details({ data }: { data: Schema }) {
-  const onQRDownload = () => {
-    const svg = document.getElementById("qr-code")!;
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas")!;
-    const ctx = canvas.getContext("2d")!;
-    const img = new Image();
-    img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height + 100;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0);
-
-      ctx.font = "30px Arial";
-      ctx.fillStyle = "white";
-      const text = `${data.code}`;
-      const textWidth = ctx.measureText(text).width;
-
-      const textX = (canvas.width - textWidth) / 2;
-      const textY = canvas.height - 20;
-
-      ctx.fillText(text, textX, textY);
-
-      const pngFile = canvas.toDataURL("image/png");
-      const downloadLink = document.createElement("a")!;
-      downloadLink.download = `QRItem-${data.code}`;
-      downloadLink.href = `${pngFile}`;
-      downloadLink.click();
-    };
-    img.src = `data:image/svg+xml;base64,${btoa(svgData)}`;
-  };
-
   return (
     <>
       <div className="flex justify-start">
@@ -93,11 +63,15 @@ function Details({ data }: { data: Schema }) {
               <DialogTitle>QR Code</DialogTitle>
               <DialogDescription>QR Code for item : {data.name}</DialogDescription>
             </DialogHeader>
-            <div className="w-full grid place-items-center">
+            <div className="w-full p-5 bg-white rounded-md grid place-items-center">
               <QRCode id="qr-code" value={data.code} />
             </div>
             <DialogFooter>
-              <Button variant="default" className="w-full flex gap-2" onClick={onQRDownload}>
+              <Button
+                variant="default"
+                className="w-full flex gap-2"
+                onClick={() => onQRDownload(data.code)}
+              >
                 <DownloadIcon className="w-4 h-4" />
                 Download QR Code
               </Button>

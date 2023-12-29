@@ -15,13 +15,13 @@ export default function useUpdateReservation() {
       data: {
         reservation_code: string;
         pickupPlan_code: string;
-        returnPlan_code?: string;
+        returnPlan_code: string;
         information?: string;
         status: string;
-        motor: { motor_code: string }[];
-        fak: { fak_code: string }[];
-        helmet: { helmet_code: string }[];
-        hardcase?: { hardcase_code: string }[];
+        motor: { motor_code: string; status: string }[];
+        fak: { fak_code: string; status: string }[];
+        helmet: { helmet_code: string; status: string }[];
+        hardcase?: { hardcase_code: string; status: string }[];
       };
     }
   >({

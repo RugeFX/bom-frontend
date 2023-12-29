@@ -1,8 +1,8 @@
 import { SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import useGetReservationDetails from "@/hooks/query/reservation/useGetReservationDetails";
-import ReservationForm from "./ReservationForm";
-
+import ReturnForm from "./ReturnForm";
+import { reservationSchema } from "../data/schema";
 export default function EditSheet({
   id,
   open,
@@ -15,6 +15,8 @@ export default function EditSheet({
   const { data, isLoading, isError, isSuccess } = useGetReservationDetails(id, {
     enabled: open,
   });
+
+  const parsedData = reservationSchema.safeParse(data?.data);
 
   return (
     <SheetContent className="w-5/6 sm:max-w-2xl overflow-y-scroll">
@@ -29,8 +31,10 @@ export default function EditSheet({
           <h2 className="text-center bg-destructive text-destructive-foreground font-semibold animate-pulse p-2 rounded-lg">
             Error loading details!
           </h2>
+        ) : isSuccess && parsedData.success ? (
+          <ReturnForm data={parsedData.data} onSuccess={onSuccess} />
         ) : (
-          isSuccess && <ReservationForm mode="update" data={data.data} onSuccess={onSuccess} />
+          <div>Parse failed!</div>
         )}
       </div>
     </SheetContent>

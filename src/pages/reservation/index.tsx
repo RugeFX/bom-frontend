@@ -20,7 +20,7 @@ import loaderRequireAuth from "@/auth/loaderRequireAuth";
 import apiClient from "@/api/apiClient";
 import type { Reservation } from "@/types/reservation";
 import { GetResponse } from "@/types/response";
-import ReservationForm from "./components/ReservationForm";
+import PickupForm from "./components/PickupForm";
 
 export const reservationsQuery: FetchQueryOptions<Reservation[]> = {
   queryKey: ["reservations"],
@@ -71,8 +71,7 @@ export default function ReservationPage() {
               <SheetDescription>Create a new reservation.</SheetDescription>
             </SheetHeader>
             <div className="mt-4 space-y-4">
-              <ReservationForm
-                mode="add"
+              <PickupForm
                 onSuccess={() => {
                   setAddModalOpen(false);
                 }}
