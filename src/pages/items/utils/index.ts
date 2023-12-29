@@ -1,4 +1,4 @@
-export const onQRDownload = () => {
+export const onQRDownload = (code: string) => {
   const svgGet = document.getElementById("qr-code")!;
   const svg = svgGet.cloneNode(true) as SVGSVGElement;
   svg.setAttribute("width", "500");
@@ -20,7 +20,7 @@ export const onQRDownload = () => {
     );
 
     ctx.font = "30px Arial";
-    const text = `${data.code}`;
+    const text = `${code}`;
     const textWidth = ctx.measureText(text).width;
 
     const textX = (canvas.width - textWidth) / 2;
@@ -31,7 +31,7 @@ export const onQRDownload = () => {
 
     const pngFile = canvas.toDataURL("image/png");
     const downloadLink = document.createElement("a")!;
-    downloadLink.download = `QRItem-${data.code}`;
+    downloadLink.download = `qritem-${code}`;
     downloadLink.href = `${pngFile}`;
     downloadLink.click();
   };

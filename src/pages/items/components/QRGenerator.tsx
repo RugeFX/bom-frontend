@@ -16,26 +16,34 @@ export default function QRGenerator({ dataBatch }: { dataBatch: string[] }) {
       const nowIso = new Date().toISOString();
 
       const svg = qrCodeRef.current.getElementsByTagName("svg")[index];
+      svg.setAttribute("width", "500");
+      svg.setAttribute("height", "500");
       const svgData = new XMLSerializer().serializeToString(svg);
 
       const canvas = document.createElement("canvas");
       const ctx = canvas.getContext("2d")!;
-      const img = new Image();
+      const img = new Image(500, 500);
 
       img.onload = async () => {
-        canvas.width = img.width;
+        canvas.width = img.width + 200;
         canvas.height = img.height + 100;
+
+        ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(
+          img,
+          (canvas.width - svg.width.baseVal.value) / 2,
+          (canvas.width - svg.height.baseVal.value) / 5
+        );
 
         ctx.font = "30px Arial";
-        ctx.fillStyle = "white";
         const text = `${data}`;
         const textWidth = ctx.measureText(text).width;
 
         const textX = (canvas.width - textWidth) / 2;
         const textY = canvas.height - 20;
 
+        ctx.fillStyle = "black";
         ctx.fillText(text, textX, textY);
 
         const pngFile = canvas.toDataURL("image/png");
