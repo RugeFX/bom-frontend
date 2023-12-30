@@ -149,7 +149,7 @@ export default function HomePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="h-[350px]">
-                      <BarChart data={data.Motor} flag={1}/>
+                      <BarChart data={data.Motor} flag={1} />
                     </div>
                   </CardContent>
                 </Card>
@@ -162,7 +162,7 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent>
                         <div className="h-[350px]">
-                          <BarChart data={p.Motor} flag={1}/>
+                          <BarChart data={p.Motor} flag={1} />
                         </div>
                       </CardContent>
                     </Card>
@@ -179,7 +179,7 @@ export default function HomePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="h-[500px]">
-                      <BarChart data={data.Hardcase} flag={1}/>
+                      <BarChart data={data.Hardcase} flag={2} />
                     </div>
                   </CardContent>
                 </Card>
@@ -192,7 +192,7 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent>
                         <div className="h-[350px]">
-                          <BarChart data={p.Hardcase} flag={1}/>
+                          <BarChart data={p.Hardcase} flag={2} />
                         </div>
                       </CardContent>
                     </Card>
@@ -209,7 +209,7 @@ export default function HomePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="h-[500px]">
-                      <BarChart data={data.Helmet} flag={2}/>
+                      <BarChart data={data.Helmet} flag={2} />
                     </div>
                   </CardContent>
                 </Card>
@@ -222,7 +222,7 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent>
                         <div className="h-[350px]">
-                          <BarChart data={p.Helmet} flag={2}/>
+                          <BarChart data={p.Helmet} flag={2} />
                         </div>
                       </CardContent>
                     </Card>
@@ -239,7 +239,7 @@ export default function HomePage() {
                   </CardHeader>
                   <CardContent>
                     <div className="h-[500px]">
-                      <BarChart data={data.Fak} flag={3}/>
+                      <BarChart data={data.Fak} flag={3} />
                     </div>
                   </CardContent>
                 </Card>
@@ -252,7 +252,7 @@ export default function HomePage() {
                       </CardHeader>
                       <CardContent>
                         <div className="h-[350px]">
-                          <BarChart data={p.Fak} flag={3}/>
+                          <BarChart data={p.Fak} flag={3} />
                         </div>
                       </CardContent>
                     </Card>
